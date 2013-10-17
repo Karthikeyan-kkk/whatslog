@@ -39,16 +39,18 @@ public class ContatoListaAdapter extends ArrayAdapter<ChatList> {
 		ImageView imagem= (ImageView) v.findViewById(R.contatoLista.foto);
 
 		Cursor contato=Utils.getContact(chatList.getKey_remote_jid(),activity.getContentResolver());
-
+		String nome=null;
 		if(contato!=null && contato.getCount()>0){
 			Uri uri=Utils.getPhotoUri(Long.parseLong(Utils.fetchContactId(contato)),activity.getContentResolver());
 			if(uri!=null){
 				imagem.setImageURI(uri);
 			}
 
-			fillText(v, R.contatoLista.label, Utils.getContactDisplayNameByNumber(contato));
+			nome=Utils.getContactDisplayNameByNumber(contato);
 		}
-
+		if(nome==null)
+			nome=chatList.getKey_remote_jid();
+		fillText(v, R.contatoLista.label,nome);
 		return v;
 	}
 

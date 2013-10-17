@@ -80,7 +80,11 @@ public class ChatAdapter extends ArrayAdapter<Messages> {
 			quem.setLayoutParams(params3); //causes layout update
 
 			Cursor contato=Utils.getContact(mensagem.getKey_remote_jid(),activity.getContentResolver());
-			quem.setText(Utils.getContactDisplayNameByNumber(contato));
+			try{
+				quem.setText(Utils.getContactDisplayNameByNumber(contato));
+			}catch(Exception e){
+				quem.setText( mensagem.getKey_remote_jid());
+			}
 		}
 
 

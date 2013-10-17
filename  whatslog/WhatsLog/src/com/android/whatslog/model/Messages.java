@@ -8,7 +8,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable
-public class Messages extends EntidadeAbstrata{
+public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 	private static final long serialVersionUID = -4679985146526783051L;
 
 	public Messages() {
@@ -288,6 +288,15 @@ public class Messages extends EntidadeAbstrata{
 	}
 	public void setRaw_data(byte[] raw_data) {
 		this.raw_data = raw_data;
+	}
+
+	@Override
+	public int compareTo(Messages another) {
+		if(getTimestamp().after(another.getTimestamp()))
+			return 1;
+		else if(getTimestamp().before(another.getTimestamp()))
+			return -1;
+		return 0;
 	}
 
 

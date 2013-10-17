@@ -8,14 +8,18 @@ import java.io.OutputStream;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 
 public class Utils {
-
 
 	public static void copyFile(File source, File dest) throws IOException {
 		FileInputStream fis = new FileInputStream(source);
@@ -35,7 +39,7 @@ public class Utils {
 
 	}
 
-	public static void createFile(File dest,String msg) throws IOException {
+	public static void createFile(File dest, String msg) throws IOException {
 
 		OutputStream output = new FileOutputStream(dest);
 		output.write(msg.getBytes());
@@ -46,78 +50,116 @@ public class Utils {
 
 	}
 
+	public static Cursor getContact(String number,
+			ContentResolver contentResolver) {
+		Uri uri = Uri.withAppendedPath(
+				ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+				Uri.encode(number));
 
-	public static Cursor getContact(String number,ContentResolver contentResolver) {
-	    Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+		Cursor contactLookup = contentResolver.query(uri, new String[] {
+				BaseColumns._ID, ContactsContract.PhoneLookup.DISPLAY_NAME },
+				null, null, null);
 
-	    Cursor contactLookup = contentResolver.query(uri, new String[] {BaseColumns._ID,
-	            ContactsContract.PhoneLookup.DISPLAY_NAME }, null, null, null);
+		if (contactLookup != null && contactLookup.getCount() > 0) {
+			contactLookup.moveToNext();
+			return contactLookup;
+			// name =
+			// contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+			// String contactId =
+			// contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
+		}
 
-        if (contactLookup != null && contactLookup.getCount() > 0) {
-            contactLookup.moveToNext();
-            return contactLookup;
-            //name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-            //String contactId = contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
-        }
-
-	    return contactLookup;
+		return contactLookup;
 	}
 
 	public static String getContactDisplayNameByNumber(Cursor contactLookup) {
-	    return contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+		return contactLookup.getString(contactLookup
+				.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
 	}
 
-	public static Uri getPhotoUri(long contactId,ContentResolver contentResolver) {
+	public static String getContactDisplayNameByNumber(String number,
+			ContentResolver contentResolver) {
+		Cursor contact = getContact(number, contentResolver);
+		return getContactDisplayNameByNumber(contact);
+	}
 
-          try {
-              Cursor cursor = contentResolver
-                      .query(ContactsContract.Data.CONTENT_URI,
-                              null,
-                              ContactsContract.Data.CONTACT_ID
-                                      + "="
-                                      + contactId
-                                      + " AND "
+	public static Uri getPhotoUri(long contactId,
+			ContentResolver contentResolver) {
 
-                                      + ContactsContract.Data.MIMETYPE
-                                      + "='"
-                                      + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
-                                      + "'", null, null);
+		try {
+			Cursor cursor = contentResolver
+					.query(ContactsContract.Data.CONTENT_URI,
+							null,
+							ContactsContract.Data.CONTACT_ID
+									+ "="
+									+ contactId
+									+ " AND "
 
-              if (cursor != null) {
-                  if (!cursor.moveToFirst()) {
-                      return null; // no photo
-                  }
-              } else {
-                  return null; // error in cursor process
-              }
+									+ ContactsContract.Data.MIMETYPE
+									+ "='"
+									+ ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
+									+ "'", null, null);
 
-          } catch (Exception e) {
-              e.printStackTrace();
-              return null;
-          }
+			if (cursor != null) {
+				if (!cursor.moveToFirst()) {
+					return null; // no photo
+				}
+			} else {
+				return null; // error in cursor process
+			}
 
-          Uri person = ContentUris.withAppendedId(
-                  ContactsContract.Contacts.CONTENT_URI, contactId);
-          return Uri.withAppendedPath(person,
-                  ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-      }
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 
+		Uri person = ContentUris.withAppendedId(
+				ContactsContract.Contacts.CONTENT_URI, contactId);
+		return Uri.withAppendedPath(person,
+				ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+	}
 
 	public static String fetchContactId(Cursor cFetch) {
 
-          String contactId = "";
+		String contactId = "";
 
+		if (cFetch.moveToFirst()) {
+			cFetch.moveToFirst();
 
-          if (cFetch.moveToFirst()) {
-              cFetch.moveToFirst();
+			contactId = cFetch
+					.getString(cFetch.getColumnIndex(PhoneLookup._ID));
 
-                  contactId = cFetch.getString(cFetch.getColumnIndex(PhoneLookup._ID));
+		}
 
-          }
+		return contactId;
 
-          return contactId;
+	}
 
-      }
-
+	public static boolean isConnected(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo mobileInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		State mobile = NetworkInfo.State.DISCONNECTED;
+		if (mobileInfo != null) {
+			mobile = mobileInfo.getState();
+		}
+		NetworkInfo wifiInfo = connectivityManager
+				.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		State wifi = NetworkInfo.State.DISCONNECTED;
+		if (wifiInfo != null) {
+			wifi = wifiInfo.getState();
+		}
+		boolean dataOnWifiOnly = (Boolean) PreferenceManager
+				.getDefaultSharedPreferences(context).getBoolean(
+						"data_wifi_only", true);
+		if ((!dataOnWifiOnly && (mobile.equals(NetworkInfo.State.CONNECTED) || wifi
+				.equals(NetworkInfo.State.CONNECTED)))
+				|| (dataOnWifiOnly && wifi.equals(NetworkInfo.State.CONNECTED))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

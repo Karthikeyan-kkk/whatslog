@@ -39,6 +39,12 @@ public class Configuracao extends EntidadeAbstrata{
 	@DatabaseField()
 	private boolean firstTime=true;
 
+	@DatabaseField()
+	private String dialer;
+
+	@DatabaseField()
+	private String subject;
+
 	public String getEmailTo() {
 		return emailTo;
 	}
@@ -86,4 +92,17 @@ public class Configuracao extends EntidadeAbstrata{
 		this.firstTime = firstTime;
 	}
 
+	public String getDialer() {
+		return dialer;
+	}
+	public void setDialer(String dialer) {
+		this.dialer = dialer;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 }

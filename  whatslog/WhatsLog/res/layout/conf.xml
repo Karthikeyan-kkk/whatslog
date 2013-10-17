@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Sender e-mail" />
+        android:text="Sender E-mail" />
 
     <EditText
         android:id="@+configuracao/smtp"
@@ -50,7 +50,7 @@
         android:layout_alignLeft="@+configuracao/label_password"
         android:layout_below="@+configuracao/label_password"
         android:layout_marginTop="30dp"
-        android:text="To" />
+        android:text="E-mail To" />
 
     <EditText
         android:id="@+configuracao/to"
@@ -63,12 +63,34 @@
         android:inputType="textEmailAddress"
         />
 
-     <TextView
-        android:id="@+configuracao/label_intervalo"
+
+      <TextView
+        android:id="@+configuracao/label_subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+configuracao/label_to"
         android:layout_below="@+configuracao/label_to"
+        android:layout_marginTop="30dp"
+        android:text="E-mail Subject" />
+
+    <EditText
+        android:id="@+configuracao/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_subject"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/to"
+        android:ems="10"
+        android:text="Whatslog History"
+        />
+
+
+     <TextView
+        android:id="@+configuracao/label_intervalo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_subject"
+        android:layout_below="@+configuracao/label_subject"
         android:layout_marginTop="30dp"
         android:text="Interval" />
 
@@ -78,10 +100,31 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+configuracao/label_intervalo"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/to"
+        android:layout_alignLeft="@+configuracao/subject"
         android:ems="10"
         android:inputType="number"
         />
+
+      <TextView
+        android:id="@+configuracao/label_dialer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_intervalo"
+        android:layout_below="@+configuracao/label_intervalo"
+        android:layout_marginTop="30dp"
+        android:text="Dialer number" />
+
+    <EditText
+        android:id="@+configuracao/dialer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_dialer"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/intervalo"
+        android:ems="10"
+        android:text="#*54321#*"
+        />
+
 
     <Button
         android:id="@+configuracao/btn"
