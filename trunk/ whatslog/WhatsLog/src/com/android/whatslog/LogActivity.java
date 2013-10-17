@@ -27,7 +27,7 @@ public class LogActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 		contatos=(ListView) findViewById(R.listaLog.listaContatos);
 
 		try {
-			ContatoListaAdapter adapter=new ContatoListaAdapter(this, R.layout.contato_item, getHelper().getChatDao().queryForAll());
+			ContatoListaAdapter adapter=new ContatoListaAdapter(this, R.layout.contato_item, getHelper().getChatDao().queryBuilder().groupBy("key_remote_jid").query() );
 			contatos.setAdapter(adapter);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
