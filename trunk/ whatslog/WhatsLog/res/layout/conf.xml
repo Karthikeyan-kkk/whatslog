@@ -1,0 +1,96 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="20dp" >
+
+    <TextView
+        android:id="@+configuracao/label_smtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Sender e-mail" />
+
+    <EditText
+        android:id="@+configuracao/smtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_smtp"
+        android:layout_alignLeft="@+configuracao/btn"
+        android:layout_alignParentRight="true"
+        android:inputType="textEmailAddress"
+         >
+
+        <requestFocus />
+    </EditText>
+
+     <TextView
+        android:id="@+configuracao/label_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_smtp"
+        android:layout_below="@+configuracao/label_smtp"
+        android:layout_marginTop="30dp"
+        android:text="Password" />
+
+    <EditText
+        android:id="@+configuracao/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_password"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/smtp"
+        android:ems="10"
+        android:inputType="textPassword"
+        />
+
+    <TextView
+        android:id="@+configuracao/label_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_password"
+        android:layout_below="@+configuracao/label_password"
+        android:layout_marginTop="30dp"
+        android:text="To" />
+
+    <EditText
+        android:id="@+configuracao/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_to"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/password"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        />
+
+     <TextView
+        android:id="@+configuracao/label_intervalo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_to"
+        android:layout_below="@+configuracao/label_to"
+        android:layout_marginTop="30dp"
+        android:text="Interval" />
+
+    <EditText
+        android:id="@+configuracao/intervalo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_intervalo"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/to"
+        android:ems="10"
+        android:inputType="number"
+        />
+
+    <Button
+        android:id="@+configuracao/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Save"
+        android:onClick="save"
+         />
+
+</RelativeLayout>
