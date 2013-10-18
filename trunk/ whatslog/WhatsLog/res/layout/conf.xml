@@ -4,17 +4,17 @@
     android:padding="20dp" >
 
     <TextView
-        android:id="@+configuracao/label_smtp"
+        android:id="@+configuracao/label_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Sender E-mail" />
+        android:text="E-mail to" />
 
     <EditText
-        android:id="@+configuracao/smtp"
+        android:id="@+configuracao/to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_smtp"
+        android:layout_alignBottom="@+configuracao/label_to"
         android:layout_alignLeft="@+configuracao/btn"
         android:layout_alignParentRight="true"
         android:inputType="textEmailAddress"
@@ -22,46 +22,6 @@
 
         <requestFocus />
     </EditText>
-
-     <TextView
-        android:id="@+configuracao/label_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_smtp"
-        android:layout_below="@+configuracao/label_smtp"
-        android:layout_marginTop="30dp"
-        android:text="Password" />
-
-    <EditText
-        android:id="@+configuracao/password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_password"
-        android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/smtp"
-        android:ems="10"
-        android:inputType="textPassword"
-        />
-
-    <TextView
-        android:id="@+configuracao/label_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_password"
-        android:layout_below="@+configuracao/label_password"
-        android:layout_marginTop="30dp"
-        android:text="E-mail To" />
-
-    <EditText
-        android:id="@+configuracao/to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_to"
-        android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/password"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        />
 
 
       <TextView
@@ -92,7 +52,7 @@
         android:layout_alignLeft="@+configuracao/label_subject"
         android:layout_below="@+configuracao/label_subject"
         android:layout_marginTop="30dp"
-        android:text="Interval" />
+        android:text="Interval (min.)" />
 
     <EditText
         android:id="@+configuracao/intervalo"
