@@ -39,7 +39,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
 		} else {
 			setContentView(R.layout.main);
-			Utils.showIcon(false, this);
+//			Utils.showIcon(false, this);
 		}
 	}
 
