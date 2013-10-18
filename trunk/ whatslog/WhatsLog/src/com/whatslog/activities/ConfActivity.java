@@ -1,4 +1,4 @@
-package com.android.whatslog.activities;
+package com.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.whatslog.R;
-import com.android.whatslog.dao.DatabaseHelperConfiguracao;
-import com.android.whatslog.model.Configuracao;
+import com.whatslog.dao.DatabaseHelperConfiguracao;
+import com.whatslog.model.Configuracao;
 
 public class ConfActivity extends Activity {
 

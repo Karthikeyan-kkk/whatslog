@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.whatslog;
 
 import java.util.Properties;
 

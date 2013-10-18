@@ -1,4 +1,4 @@
-package com.android.whatslog.activities;
+package com.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,13 +11,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.whatslog.MyService;
 import com.android.whatslog.R;
-import com.android.whatslog.Utils;
-import com.android.whatslog.dao.DatabaseHelperConfiguracao;
-import com.android.whatslog.dao.DatabaseHelperInternal;
-import com.android.whatslog.model.Configuracao;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.whatslog.MyService;
+import com.whatslog.Utils;
+import com.whatslog.dao.DatabaseHelperConfiguracao;
+import com.whatslog.dao.DatabaseHelperInternal;
+import com.whatslog.model.Configuracao;
 
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
@@ -91,16 +91,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 		Intent intent = new Intent(this, LogActivity.class);
 		setIntent(intent);
 		startActivityForResult(intent, 1);
-	}
-
-	public void sendMail(View view) {
-		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
-				"bruno.teixeira.canto@gmail.com");
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "teste");
-		emailIntent.setType("plain/text");
-		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "teste");
-		startActivity(emailIntent);
 	}
 
 	@Override

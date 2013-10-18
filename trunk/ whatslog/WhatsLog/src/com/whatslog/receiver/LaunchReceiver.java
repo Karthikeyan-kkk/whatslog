@@ -1,4 +1,4 @@
-package com.android.whatslog.receiver;
+package com.whatslog.receiver;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -7,10 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.android.whatslog.Utils;
-import com.android.whatslog.activities.MainActivity;
-import com.android.whatslog.dao.DatabaseHelperConfiguracao;
-import com.android.whatslog.model.Configuracao;
+import com.whatslog.Utils;
+import com.whatslog.activities.MainActivity;
+import com.whatslog.dao.DatabaseHelperConfiguracao;
+import com.whatslog.model.Configuracao;
 
 public class LaunchReceiver extends BroadcastReceiver {
 	@Override

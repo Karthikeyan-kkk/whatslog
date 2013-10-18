@@ -1,4 +1,4 @@
-package com.android.whatslog.dao;
+package com.whatslog.dao;
 
 import java.io.IOException;
 import java.sql.SQLException;
