@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.android.whatslog.adapter;
 
 import java.util.List;
 
@@ -13,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.whatslog.R;
+import com.android.whatslog.Utils;
+import com.android.whatslog.R.contatoLista;
+import com.android.whatslog.R.layout;
 import com.android.whatslog.model.ChatList;
 
 public class ContatoListaAdapter extends ArrayAdapter<ChatList> {

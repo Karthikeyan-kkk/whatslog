@@ -1,4 +1,6 @@
-package com.android.whatslog;
+package com.android.whatslog.receiver;
+
+import com.android.whatslog.MyService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

