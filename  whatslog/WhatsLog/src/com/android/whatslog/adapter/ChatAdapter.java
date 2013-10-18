@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.android.whatslog.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +15,11 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.whatslog.R;
+import com.android.whatslog.Utils;
+import com.android.whatslog.R.chatLista;
+import com.android.whatslog.R.drawable;
+import com.android.whatslog.R.layout;
 import com.android.whatslog.model.Messages;
 
 public class ChatAdapter extends ArrayAdapter<Messages> {

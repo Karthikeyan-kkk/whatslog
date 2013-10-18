@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.android.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ListView;
 
+import com.android.whatslog.R;
+import com.android.whatslog.R.layout;
+import com.android.whatslog.R.listaChat;
+import com.android.whatslog.R.menu;
+import com.android.whatslog.adapter.ChatAdapter;
 import com.android.whatslog.dao.DatabaseHelperInternal;
 import com.android.whatslog.model.Messages;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
