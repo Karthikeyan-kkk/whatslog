@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.whatslog;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -31,13 +31,13 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.whatslog.dao.DatabaseHelperConfiguracao;
-import com.android.whatslog.dao.DatabaseHelperExternal;
-import com.android.whatslog.dao.DatabaseHelperInternal;
-import com.android.whatslog.model.ChatList;
-import com.android.whatslog.model.Configuracao;
-import com.android.whatslog.model.Messages;
 import com.j256.ormlite.dao.Dao;
+import com.whatslog.dao.DatabaseHelperConfiguracao;
+import com.whatslog.dao.DatabaseHelperExternal;
+import com.whatslog.dao.DatabaseHelperInternal;
+import com.whatslog.model.ChatList;
+import com.whatslog.model.Configuracao;
+import com.whatslog.model.Messages;
 
 public class MyService extends Service {
 

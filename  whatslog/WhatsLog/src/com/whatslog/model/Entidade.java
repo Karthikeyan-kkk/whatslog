@@ -1,4 +1,4 @@
-package com.android.whatslog.model;
+package com.whatslog.model;
 
 import java.io.Serializable;
 

@@ -1,25 +1,20 @@
-package com.android.whatslog.activities;
+package com.whatslog.activities;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ListView;
 
 import com.android.whatslog.R;
-import com.android.whatslog.R.layout;
-import com.android.whatslog.R.listaChat;
-import com.android.whatslog.R.menu;
-import com.android.whatslog.adapter.ChatAdapter;
-import com.android.whatslog.dao.DatabaseHelperInternal;
-import com.android.whatslog.model.Messages;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.whatslog.adapter.ChatAdapter;
+import com.whatslog.dao.DatabaseHelperInternal;
+import com.whatslog.model.Messages;
 
 public class ChatActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 	private ListView chat;
-	private Activity activity;
 	private String id;
 
 	@Override
@@ -27,7 +22,6 @@ public class ChatActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_list);
 
-		this.activity=this;
 		chat=(ListView) findViewById(R.listaChat.listaChat);
 
 		id=getIntent().getStringExtra("id");
