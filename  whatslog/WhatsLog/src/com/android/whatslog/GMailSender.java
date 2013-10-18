@@ -53,15 +53,15 @@ public class GMailSender {
 		Account me = accounts[0]; // You need to get a google account on the
 									// device, it changes if you have more than
 									// one
-		am.invalidateAuthToken("com.google", token);
-		am.getAuthToken(me,"oauth2:https://mail.google.com/", false,
+		user=me.name;
+//		am.invalidateAuthToken("com.google", token);
+		AccountManagerFuture<Bundle> ma = am.getAuthToken(me,"oauth2:https://mail.google.com/", true,
 				new AccountManagerCallback<Bundle>() {
 					@Override
 					public void run(AccountManagerFuture<Bundle> result) {
 						try {
 							Bundle bundle = result.getResult();
 							token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
-							user=bundle.getString(AccountManager.KEY_ACCOUNT_NAME);
 							Log.d("initToken callback", "token=" + token);
 
 						} catch (Exception e) {
@@ -69,7 +69,6 @@ public class GMailSender {
 						}
 					}
 				}, null);
-
 
 		Log.d("getToken", "token=" + token);
 	}
@@ -111,8 +110,7 @@ public class GMailSender {
 	public synchronized void sendMail(String subject, String body, String oauthToken, String recipients) {
 		try {
 
-			SMTPTransport smtpTransport = connectToSmtp("smtp.gmail.com", 587,
-					user, oauthToken != null ? oauthToken : token, true);
+			SMTPTransport smtpTransport = connectToSmtp("smtp.gmail.com", 587, user, oauthToken != null ? oauthToken : token, true);
 
 			MimeMessage message = new MimeMessage(session);
 
