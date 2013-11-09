@@ -6,22 +6,70 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
+import android.provider.Settings.Secure;
+
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.ServerManagedPolicy;
 
 public class Utils {
+
+
+	public static final byte[] SALT = new byte[] {-92,98,-32,49,65,34,23,44,65,-23,-12,-9,-3,5,-23,23,-94,123,-11,4};
+
+
+	public static String getDeviceId(ContentResolver contentResolver){
+		String deviceId = Secure.getString(contentResolver,Secure.ANDROID_ID);
+		return "_#$A12abk%"+deviceId;
+	}
+
+	public static boolean isDebugglabe(Context context){
+		return  ( 0 != ( context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+	}
+
+	public static void verifyLicense(Context ctx){
+		if(!isDebugglabe(ctx)){
+			Handler mHandler;
+			LicenseCheckerCallback mLicenseCheckerCallback;
+		    LicenseChecker mChecker;
+
+		    mHandler=new Handler();
+
+			if(ctx instanceof Activity){
+				Builder dialog=new AlertDialog.Builder(ctx);
+
+				mLicenseCheckerCallback=new com.whatslog.LicenseChecker(mHandler,dialog,ctx);
+			}
+			else
+				mLicenseCheckerCallback=new com.whatslog.LicenseChecker(mHandler,ctx);
+
+
+		    mChecker = new LicenseChecker(ctx, new ServerManagedPolicy(ctx, new AESObfuscator(Utils.SALT, ctx.getPackageName(), Utils.getDeviceId(ctx.getContentResolver()))), Utils.BASE64_PUBLIC_KEY);
+
+		    mChecker.checkAccess(mLicenseCheckerCallback);
+		}
+
+	}
 
 	public static void copyFile(File source, File dest) throws IOException {
 		FileInputStream fis = new FileInputStream(source);

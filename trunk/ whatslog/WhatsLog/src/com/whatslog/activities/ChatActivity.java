@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ListView;
 
-import com.android.whatslog.R;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.whatslog.R;
 import com.whatslog.adapter.ChatAdapter;
 import com.whatslog.dao.DatabaseHelperInternal;
 import com.whatslog.model.Messages;

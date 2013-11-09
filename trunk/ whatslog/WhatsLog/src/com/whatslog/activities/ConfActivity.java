@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.whatslog.R;
+import com.whatslog.R;
 import com.whatslog.dao.DatabaseHelperConfiguracao;
 import com.whatslog.model.Configuracao;
 
