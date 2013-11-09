@@ -7,14 +7,20 @@
         android:title="@string/action_settings"/>
 
     <item android:id="@+id/menu_icon"
-          android:title="Icon"
+          android:title="@string/icon"
           >
          <menu>
             <item android:id="@+id/show_icon"
-                  android:title="Show" />
+                  android:title="@string/show" />
             <item android:id="@+id/hide_icon"
-                  android:title="Hide" />
+                  android:title="@string/hide" />
         </menu>
 
     </item>
+
+     <item
+        android:id="@+id/version"
+        android:showAsAction="never"
+        android:orderInCategory="101"
+        android:title="@string/version_label"/>
 </menu>

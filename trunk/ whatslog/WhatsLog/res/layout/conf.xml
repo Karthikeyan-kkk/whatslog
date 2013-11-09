@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="E-mail to" />
+        android:text="@string/mail_to" />
 
     <EditText
         android:id="@+configuracao/to"
@@ -31,7 +31,7 @@
         android:layout_alignLeft="@+configuracao/label_to"
         android:layout_below="@+configuracao/label_to"
         android:layout_marginTop="30dp"
-        android:text="E-mail Subject" />
+        android:text="@string/subject_label" />
 
     <EditText
         android:id="@+configuracao/subject"
@@ -41,7 +41,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignLeft="@+configuracao/to"
         android:ems="10"
-        android:text="Whatslog History"
+        android:text="@string/subject"
         />
 
 
@@ -52,7 +52,7 @@
         android:layout_alignLeft="@+configuracao/label_subject"
         android:layout_below="@+configuracao/label_subject"
         android:layout_marginTop="30dp"
-        android:text="Interval (min.)" />
+        android:text="@string/interval" />
 
     <EditText
         android:id="@+configuracao/intervalo"
@@ -72,7 +72,7 @@
         android:layout_alignLeft="@+configuracao/label_intervalo"
         android:layout_below="@+configuracao/label_intervalo"
         android:layout_marginTop="30dp"
-        android:text="Dialer number" />
+        android:text="@string/dialer" />
 
     <EditText
         android:id="@+configuracao/dialer"
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Save"
+        android:text="@string/save"
         android:onClick="save"
          />
 
