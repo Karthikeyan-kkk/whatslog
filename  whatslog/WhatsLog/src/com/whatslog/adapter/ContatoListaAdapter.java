@@ -13,9 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.whatslog.R;
-import com.android.whatslog.R.contatoLista;
-import com.android.whatslog.R.layout;
+import com.whatslog.R;
 import com.whatslog.Utils;
 import com.whatslog.model.ChatList;
 

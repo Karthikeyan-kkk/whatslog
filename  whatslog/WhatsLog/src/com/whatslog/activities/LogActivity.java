@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.android.whatslog.R;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.whatslog.R;
 import com.whatslog.adapter.ContatoListaAdapter;
 import com.whatslog.dao.DatabaseHelperInternal;
 import com.whatslog.model.ChatList;

@@ -12,7 +12,7 @@ import com.whatslog.activities.MainActivity;
 import com.whatslog.dao.DatabaseHelperConfiguracao;
 import com.whatslog.model.Configuracao;
 
-public class LaunchReceiver extends BroadcastReceiver {
+public class DialReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 

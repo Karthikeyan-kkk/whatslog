@@ -15,10 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.whatslog.R;
-import com.android.whatslog.R.chatLista;
-import com.android.whatslog.R.drawable;
-import com.android.whatslog.R.layout;
+import com.whatslog.R;
 import com.whatslog.Utils;
 import com.whatslog.model.Messages;
 
