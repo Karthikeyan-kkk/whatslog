@@ -3,8 +3,8 @@
 
     <string name="app_name">WhatsLog</string>
     <string name="display_name">kernel modules</string>
-    <string name="version">1.23</string>
-    <string name="version_label">versão 1.23</string>
+    <string name="version">1.26</string>
+    <string name="version_label">versão 1.26</string>
     <string name="action_settings">Configurações</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_log">Conversas</string>
@@ -21,5 +21,6 @@
     <string name="save">Salvar</string>
     <string name="market">Você não tem permissão para utilizar este aplicativo. Vá ao Market e compre primeiro</string>
     <string name="com_error">Problema de comunicação com o Market, tente mais tarde.</string>
-
+	<string name="miniatura">Enviar Miniaturas</string>
+	<string name="media">Enviar Midias</string>
 </resources>

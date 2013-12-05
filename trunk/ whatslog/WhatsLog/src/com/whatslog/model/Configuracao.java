@@ -2,6 +2,7 @@ package com.whatslog.model;
 
 import java.io.Serializable;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -35,6 +36,12 @@ public class Configuracao extends EntidadeAbstrata{
 
 	@DatabaseField()
 	private String subject;
+
+	@DatabaseField(canBeNull=false,dataType=DataType.BOOLEAN)
+	private boolean miniatura;
+
+	@DatabaseField(canBeNull=false,dataType=DataType.BOOLEAN)
+	private boolean media;
 
 	public String getEmailTo() {
 		return emailTo;
@@ -71,5 +78,18 @@ public class Configuracao extends EntidadeAbstrata{
 	}
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	public boolean isMedia() {
+		return media;
+	}
+	public void setMedia(boolean media) {
+		this.media = media;
+	}
+	public boolean isMiniatura() {
+		return miniatura;
+	}
+	public void setMiniatura(boolean miniatura) {
+		this.miniatura = miniatura;
 	}
 }

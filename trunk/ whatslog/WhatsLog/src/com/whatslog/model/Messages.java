@@ -299,5 +299,16 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 		return 0;
 	}
 
-
+	public boolean isVideo(){
+		return getMedia_wa_type().trim().equals("3");
+	}
+	public boolean isAudio(){
+		return getMedia_wa_type().trim().equals("2");
+	}
+	public boolean isImagem(){
+		return getMedia_wa_type().trim().equals("1");
+	}
+	public boolean isMap(){
+		return getMedia_wa_type().trim().equals("5");
+	}
 }

@@ -86,6 +86,49 @@
         />
 
 
+     <TextView
+        android:id="@+configuracao/label_miniatura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_dialer"
+        android:layout_below="@+configuracao/label_dialer"
+        android:layout_marginTop="30dp"
+        android:text="@string/miniatura" />
+
+    <CheckBox
+        android:id="@+configuracao/miniatura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_miniatura"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/dialer"
+        android:ems="10"
+        />
+
+
+     <TextView
+        android:id="@+configuracao/label_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+configuracao/label_miniatura"
+        android:layout_below="@+configuracao/label_miniatura"
+        android:layout_marginTop="30dp"
+        android:text="@string/media"
+        android:visibility="gone"
+        />
+
+    <CheckBox
+        android:id="@+configuracao/media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+configuracao/label_media"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+configuracao/miniatura"
+        android:ems="10"
+        android:visibility="gone"
+        />
+
+
     <Button
         android:id="@+configuracao/btn"
         android:layout_width="wrap_content"

