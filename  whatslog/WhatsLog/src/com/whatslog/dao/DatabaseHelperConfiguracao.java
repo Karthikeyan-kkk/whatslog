@@ -25,7 +25,7 @@ public class DatabaseHelperConfiguracao extends OrmLiteSqliteOpenHelper {
 	 ************************************************/
 
 	private static final String DATABASE_NAME = "configuracao.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private Dao<Configuracao, Integer> dao;
 
 	public DatabaseHelperConfiguracao(Context context) {
@@ -46,8 +46,17 @@ public class DatabaseHelperConfiguracao extends OrmLiteSqliteOpenHelper {
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, ConnectionSource arg1, int arg2,
-			int arg3) {
+	public void onUpgrade(SQLiteDatabase arg0, ConnectionSource arg1, int oldVer, int newVer) {
+
+		if(oldVer==1){
+			try {
+				getDao().executeRaw("ALTER TABLE `configuracao` ADD COLUMN miniatura INTEGER;");
+				getDao().executeRaw("ALTER TABLE `configuracao` ADD COLUMN media INTEGER;");
+
+			} catch (SQLException e) {
+			}
+
+		}
 		// TODO Auto-generated method stub
 
 	}

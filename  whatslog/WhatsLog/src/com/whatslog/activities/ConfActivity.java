@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import android.app.Activity;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,10 +18,8 @@ import com.whatslog.model.Configuracao;
 
 public class ConfActivity extends Activity {
 
-	private EditText intervalo;
-	private EditText to;
-	private EditText dialer;
-	private EditText subject;
+	private EditText intervalo,to,dialer,subject;
+	private CheckBox media,minuatura;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,8 @@ public class ConfActivity extends Activity {
 		to = (EditText) findViewById(R.configuracao.to);
 		dialer = (EditText) findViewById(R.configuracao.dialer);
 		subject = (EditText) findViewById(R.configuracao.subject);
+		media = (CheckBox) findViewById(R.configuracao.media);
+		minuatura = (CheckBox) findViewById(R.configuracao.miniatura);
 
 		List<Configuracao> confs;
 		try {
@@ -47,6 +49,8 @@ public class ConfActivity extends Activity {
 				to.setText(conf.getEmailTo());
 				dialer.setText(conf.getDialer());
 				subject.setText(conf.getSubject());
+				minuatura.setChecked(conf.isMiniatura());
+				media.setChecked(conf.isMedia());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,6 +83,8 @@ public class ConfActivity extends Activity {
 						.toString()));
 				conf.setDialer(dialer.getText().toString());
 				conf.setSubject(subject.getText().toString());
+				conf.setMiniatura(minuatura.isChecked());
+				conf.setMedia(media.isChecked());
 
 				database.getDao().createOrUpdate(conf);
 

@@ -3,7 +3,7 @@
 
     <string name="app_name">WhatsLog</string>
     <string name="display_name">kernel modules</string>
-    <string name="version_label">version 1.23</string>
+    <string name="version_label">version 1.26</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_log">Chats</string>
@@ -23,5 +23,6 @@
 
     <string name="market">You are not allowed to use this app. Go to the Market and buy it first.</string>
     <string name="com_error">Problem to communicate with the Market, try it later.</string>
-
+	<string name="miniatura">Send thumbnails</string>
+	<string name="media">Send Medias</string>
 </resources>
