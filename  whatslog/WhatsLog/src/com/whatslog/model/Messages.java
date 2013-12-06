@@ -23,8 +23,8 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 	@DatabaseField(generatedId=true)
 	private Integer _id;
 
-	@DatabaseField()
-	private String key_remote_jid;
+	//@DatabaseField()
+	//private String key_remote_jid;
 
 	@DatabaseField()
 	private int key_from_me;
@@ -95,13 +95,16 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 	@DatabaseField()
 	private int origin;
 
-	public String getKey_remote_jid() {
-		return key_remote_jid;
-	}
+	@DatabaseField(foreign=true, foreignColumnName="key_remote_jid",columnName="key_remote_jid")
+	private ChatList chatList;
 
-	public void setKey_remote_jid(String key_remote_jid) {
-		this.key_remote_jid = key_remote_jid;
+	public String getKey_remote_jid() {
+		return chatList.getKey_remote_jid();
 	}
+//
+//	public void setKey_remote_jid(String key_remote_jid) {
+//		this.key_remote_jid = key_remote_jid;
+//	}
 
 	public int getKey_from_me() {
 		return key_from_me;
@@ -257,8 +260,6 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 		this.receipt_server_timestamp = receipt_server_timestamp;
 	}
 
-
-
 	public int getRecipient_count() {
 		return recipient_count;
 	}
@@ -297,6 +298,13 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 		else if(getTimestamp().before(another.getTimestamp()))
 			return -1;
 		return 0;
+	}
+
+	public ChatList getChatList() {
+		return chatList;
+	}
+	public void setChatList(ChatList chatList) {
+		this.chatList = chatList;
 	}
 
 	public boolean isVideo(){

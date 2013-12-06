@@ -337,18 +337,21 @@ public class MainService extends Service {
 					.groupBy("key_remote_jid").query();
 			int i = 0;
 			for (ChatList chat : chats) {
-
 				String nome = chat.getKey_remote_jid();
 
 				try {
+
 					nome = Utils.getContactDisplayNameByNumber(chat
 							.getKey_remote_jid(), getApplication()
 							.getContentResolver());
 
-				} catch (Exception e) {
+				} catch (Exception e){
+					nome=chat.getSubject()!=null && chat.getSubject()!=""?chat.getSubject():chat.getKey_remote_jid();
 				}
 
-				Messages me= internal.getMessagesDao().queryBuilder().orderBy("timestamp", false).where().eq("key_remote_jid", chat.getKey_remote_jid()).queryForFirst();
+				//Messages me= internal.getMessagesDao().queryBuilder().orderBy("timestamp", false).where().eq("key_remote_jid", chat.getKey_remote_jid()).queryForFirst();
+				Messages me=null;
+				try{me=chat.getMensagens().get(0);}catch(Exception e){}
 				String data="",msg="";
 				if(me!=null){
 					data=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(me.getTimestamp());
@@ -379,13 +382,15 @@ public class MainService extends Service {
 			List<Messages> mensagens = internal.getMessagesDao().queryForAll();
 
 			for (Messages message : mensagens) {
+				if(message.getChatList()!=null){
+					String key=message.getChatList().getKey_remote_jid();
+					if (!listaMensagens.containsKey(key)) {
+						listaMensagens.put(key,
+								new ArrayList<Messages>());
+					}
 
-				if (!listaMensagens.containsKey(message.getKey_remote_jid())) {
-					listaMensagens.put(message.getKey_remote_jid(),
-							new ArrayList<Messages>());
+					listaMensagens.get(key).add(message);
 				}
-
-				listaMensagens.get(message.getKey_remote_jid()).add(message);
 
 			}
 
