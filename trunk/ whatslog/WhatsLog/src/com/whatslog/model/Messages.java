@@ -3,9 +3,12 @@ package com.whatslog.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import android.content.ContentResolver;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.whatslog.Utils;
 
 @DatabaseTable
 public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
@@ -74,8 +77,8 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 	@DatabaseField()
 	private String remote_resource;
 
-	@DatabaseField()
-	private int received_timestamp;
+	@DatabaseField(dataType=DataType.DATE_LONG)
+	private Date received_timestamp;
 
 	@DatabaseField()
 	private int send_timestamp;
@@ -236,11 +239,11 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 		this.remote_resource = remote_resource;
 	}
 
-	public int getReceived_timestamp() {
+	public Date getReceived_timestamp() {
 		return received_timestamp;
 	}
 
-	public void setReceived_timestamp(int received_timestamp) {
+	public void setReceived_timestamp(Date received_timestamp) {
 		this.received_timestamp = received_timestamp;
 	}
 
@@ -318,5 +321,21 @@ public class Messages extends EntidadeAbstrata implements Comparable<Messages>{
 	}
 	public boolean isMap(){
 		return getMedia_wa_type().trim().equals("5");
+	}
+
+	public boolean isMedia(){
+		return isVideo() || isAudio() || isMap() || isImagem();
+	}
+
+	public String getNome(ContentResolver contentResolver) {
+		if(getKey_from_me()==1)
+			return "";
+		String nome = getKey_remote_jid();
+		try {
+			nome = Utils.getContactDisplayNameByNumber(getKey_remote_jid(),
+					contentResolver);
+		} catch (Exception e) {
+		}
+		return nome;
 	}
 }
