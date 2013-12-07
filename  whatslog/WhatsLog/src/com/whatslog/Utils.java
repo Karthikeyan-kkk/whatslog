@@ -1,10 +1,12 @@
 package com.whatslog;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.app.Activity;
@@ -27,8 +29,10 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
+import android.provider.MediaStore;
 import android.provider.Settings.Secure;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
@@ -255,5 +259,50 @@ public class Utils {
 				}
 		}
 		return null;
+	}
+
+	public static String getFilePathFromContentUri(Uri uri,
+	        ContentResolver contentResolver) {
+		String fileName="unknown";//default fileName
+	    Uri filePathUri = uri;
+	    if (uri.getScheme().toString().compareTo("content")==0)
+	    {
+	        Cursor cursor = contentResolver.query(uri, null, null, null, null);
+	        if (cursor.moveToFirst())
+	        {
+	            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
+	            filePathUri = Uri.parse(cursor.getString(column_index));
+	            fileName = filePathUri.getLastPathSegment().toString();
+	        }
+	    }
+	    else if (uri.getScheme().compareTo("file")==0)
+	    {
+	        fileName = filePathUri.getLastPathSegment().toString();
+	    }
+	    else
+	    {
+	        fileName = fileName+"_"+filePathUri.getLastPathSegment();
+	    }
+	    return fileName;
+	}
+	public static byte[] getBytesFromInputStream(InputStream is)
+	{
+	    try
+	    {
+	    	ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+	        byte[] buffer = new byte[0xFFFF];
+
+	        for (int len; (len = is.read(buffer)) != -1;)
+	            os.write(buffer, 0, len);
+
+	        os.flush();
+
+	        return os.toByteArray();
+	    }
+	    catch (IOException e)
+	    {
+	        return null;
+	    }
 	}
 }
