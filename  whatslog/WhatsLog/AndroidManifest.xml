@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.whatslog"
-    android:versionCode="12"
+    android:versionCode="13"
     android:versionName="@string/version" >
 
     <uses-sdk
@@ -26,7 +26,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/display_name"
         android:theme="@style/AppTheme"
-        android:debuggable="true"
+        android:debuggable="false"
          >
         <activity
             android:name="com.whatslog.activities.MainActivity"
