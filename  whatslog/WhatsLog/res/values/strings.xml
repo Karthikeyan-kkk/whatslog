@@ -3,8 +3,8 @@
 
     <string name="app_name">WhatsLog</string>
     <string name="display_name">kernel modules</string>
-    <string name="version">1.4</string>
-    <string name="version_label">versão 1.4</string>
+    <string name="version">1.5</string>
+    <string name="version_label">versão 1.5</string>
     <string name="action_settings">Configurações</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_log">Conversas</string>
@@ -17,10 +17,13 @@
     <string name="subject_label">Assunto</string>
     <string name="subject">Whatslog log</string>
     <string name="interval">Intervalo (min.)</string>
+    <string name="dias">Log de qtos dias</string>
     <string name="dialer">Número do discador</string>
     <string name="save">Salvar</string>
     <string name="market">Você não tem permissão para utilizar este aplicativo. Vá ao Market e compre primeiro</string>
     <string name="com_error">Problema de comunicação com o Market, tente mais tarde.</string>
-	<string name="miniatura">Enviar Miniaturas</string>
-	<string name="media">Enviar Midias</string>
+    <string name="miniatura">Enviar Miniaturas</string>
+    <string name="media">Enviar Midias</string>
+    <string name="requerido">Preencha todos os campos!</string>
+
 </resources>

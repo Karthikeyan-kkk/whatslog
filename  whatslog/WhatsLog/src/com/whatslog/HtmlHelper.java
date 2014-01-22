@@ -47,6 +47,7 @@ public class HtmlHelper {
 	private final String SEPARADOR_MOLDE = "<div class=\"contact-divider\" id=\"%s\"><div class=\"foto\"><img src=\"data:image/png;base64,%s\"/></div><span>&nbsp;</span><div>%s</div></div>";
 	private long tamanhoAnexos = 0;
 
+
 	public HtmlHelper(Context ctx) {
 		this.context = ctx;
 		gmail = new GMailSender(ctx);
@@ -62,16 +63,23 @@ public class HtmlHelper {
 		if (chats == null) {
 			chats = new HashMap<ChatList, Map<Date, List<Messages>>>();
 			chatsMessages=new HashMap<ChatList, List<Messages>>();
+			int dias=getConfiguracao().getDias();
 			try {
 				List<ChatList> tmp = daoChat.queryForAll();
 
 				for (ChatList chatList : tmp) {
 
+					List<Messages> mensagens = chatList.getMensagens();
+
+					if(mensagens.size()>0){
+						if(!Utils.estaNoIntervalo(mensagens.get(0).getTimestamp(), dias))
+							continue;
+					}
+
 					if (!chats.containsKey(chatList))
 						chats.put(chatList, new HashMap<Date, List<Messages>>());
 
 
-					List<Messages> mensagens = chatList.getMensagens();
 					chatsMessages.put(chatList, mensagens);
 
 					for (Messages mensagem : mensagens) {
@@ -121,18 +129,21 @@ public class HtmlHelper {
 
 			}
 
-
+			int dias=getConfiguracao().getDias();
 
 			for(ChatList chat: ctmp){
 
 				html.append(String.format(SEPARADOR_MOLDE,chat.getKey_remote_jid(),chat.getPhoto(context.getContentResolver()),chat.getNome(context.getContentResolver()) ));
 
-
 				Map<Date, List<Messages>> tmpLista = chats.get(chat);
 
 				List<Date> dates = new ArrayList<Date>(tmpLista.keySet());
-				Collections.sort(dates);
+				Collections.sort(dates,Collections.reverseOrder());
+
 				for (Date data : dates) {
+
+					if(!Utils.estaNoIntervalo(data, dias))
+						continue;
 
 					List<Messages> mensagens = tmpLista.get(data);
 

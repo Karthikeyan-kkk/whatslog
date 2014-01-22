@@ -8,6 +8,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +40,7 @@ import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.ServerManagedPolicy;
+import com.whatslog.model.Messages;
 
 public class Utils {
 
@@ -106,6 +109,7 @@ public class Utils {
 		output.close();
 
 	}
+
 
 	public static Cursor getContact(String number,
 			ContentResolver contentResolver) {
@@ -304,5 +308,18 @@ public class Utils {
 	    {
 	        return null;
 	    }
+	}
+
+	public static boolean estaNoIntervalo(Date data,int dias){
+		Calendar dia = Calendar.getInstance();
+
+		dia.set(Calendar.HOUR_OF_DAY, 0);
+		dia.set(Calendar.MINUTE, 0);
+		dia.set(Calendar.SECOND, 0);
+		dia.set(Calendar.MILLISECOND, 0);
+
+		dia.add(Calendar.DATE, dias*-1);
+
+		return (data.getTime()>=dia.getTimeInMillis());
 	}
 }

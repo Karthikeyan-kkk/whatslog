@@ -29,6 +29,9 @@ public class Configuracao extends EntidadeAbstrata{
 	private Integer intervalo;
 
 	@DatabaseField()
+	private Integer dias;
+
+	@DatabaseField()
 	private boolean firstTime=true;
 
 	@DatabaseField()
@@ -91,5 +94,12 @@ public class Configuracao extends EntidadeAbstrata{
 	}
 	public void setMiniatura(boolean miniatura) {
 		this.miniatura = miniatura;
+	}
+
+	public Integer getDias() {
+		return dias;
+	}
+	public void setDias(Integer dias) {
+		this.dias = dias;
 	}
 }
