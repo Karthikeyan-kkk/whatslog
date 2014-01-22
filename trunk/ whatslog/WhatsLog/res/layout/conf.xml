@@ -4,18 +4,18 @@
     android:padding="20dp" >
 
     <TextView
-        android:id="@+configuracao/label_to"
+        android:id="@+id/configuracao_label_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="@string/mail_to" />
 
     <EditText
-        android:id="@+configuracao/to"
+        android:id="@+id/configuracao_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_to"
-        android:layout_alignLeft="@+configuracao/btn"
+        android:layout_alignBottom="@+id/configuracao_label_to"
+        android:layout_alignLeft="@+id/configuracao_btn"
         android:layout_alignParentRight="true"
         android:inputType="textEmailAddress"
          >
@@ -25,112 +25,136 @@
 
 
       <TextView
-        android:id="@+configuracao/label_subject"
+        android:id="@+id/configuracao_label_subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_to"
-        android:layout_below="@+configuracao/label_to"
+        android:layout_alignLeft="@+id/configuracao_label_to"
+        android:layout_below="@+id/configuracao_label_to"
         android:layout_marginTop="30dp"
         android:text="@string/subject_label" />
 
     <EditText
-        android:id="@+configuracao/subject"
+        android:id="@+id/configuracao_subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_subject"
+        android:layout_alignBottom="@+id/configuracao_label_subject"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/to"
+        android:layout_alignLeft="@+id/configuracao_to"
         android:ems="10"
         android:text="@string/subject"
         />
 
 
      <TextView
-        android:id="@+configuracao/label_intervalo"
+        android:id="@+id/configuracao_label_intervalo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_subject"
-        android:layout_below="@+configuracao/label_subject"
+        android:layout_alignLeft="@+id/configuracao_label_subject"
+        android:layout_below="@+id/configuracao_label_subject"
         android:layout_marginTop="30dp"
         android:text="@string/interval" />
 
     <EditText
-        android:id="@+configuracao/intervalo"
+        android:id="@+id/configuracao_intervalo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_intervalo"
+        android:layout_alignBottom="@+id/configuracao_label_intervalo"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/subject"
+        android:layout_alignLeft="@+id/configuracao_subject"
         android:ems="10"
         android:inputType="number"
         />
 
-      <TextView
-        android:id="@+configuracao/label_dialer"
+
+
+    <TextView
+        android:id="@+id/configuracao_label_dias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_intervalo"
-        android:layout_below="@+configuracao/label_intervalo"
+        android:layout_alignLeft="@+id/configuracao_label_intervalo"
+        android:layout_below="@+id/configuracao_label_intervalo"
+        android:layout_marginTop="30dp"
+        android:text="@string/dias" />
+
+    <EditText
+        android:id="@+id/configuracao_dias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/configuracao_label_dias"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+id/configuracao_intervalo"
+        android:ems="10"
+        android:inputType="number"
+        />
+
+
+
+      <TextView
+        android:id="@+id/configuracao_label_dialer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/configuracao_label_dias"
+        android:layout_below="@+id/configuracao_label_dias"
         android:layout_marginTop="30dp"
         android:text="@string/dialer" />
 
     <EditText
-        android:id="@+configuracao/dialer"
+        android:id="@+id/configuracao_dialer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_dialer"
+        android:layout_alignBottom="@+id/configuracao_label_dialer"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/intervalo"
+        android:layout_alignLeft="@+id/configuracao_dias"
         android:ems="10"
         android:text="#*54321#*"
         />
 
 
      <TextView
-        android:id="@+configuracao/label_miniatura"
+        android:id="@+id/configuracao_label_miniatura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_dialer"
-        android:layout_below="@+configuracao/label_dialer"
+        android:layout_alignLeft="@+id/configuracao_label_dialer"
+        android:layout_below="@+id/configuracao_label_dialer"
         android:layout_marginTop="30dp"
         android:text="@string/miniatura" />
 
     <CheckBox
-        android:id="@+configuracao/miniatura"
+        android:id="@+id/configuracao_miniatura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_miniatura"
+        android:layout_alignBottom="@+id/configuracao_label_miniatura"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/dialer"
+        android:layout_alignLeft="@+id/configuracao_dialer"
         android:ems="10"
         />
 
 
      <TextView
-        android:id="@+configuracao/label_media"
+        android:id="@+id/configuracao_label_media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+configuracao/label_miniatura"
-        android:layout_below="@+configuracao/label_miniatura"
+        android:layout_alignLeft="@+id/configuracao_label_miniatura"
+        android:layout_below="@+id/configuracao_label_miniatura"
         android:layout_marginTop="30dp"
         android:text="@string/media"
         android:visibility="gone"
         />
 
     <CheckBox
-        android:id="@+configuracao/media"
+        android:id="@+id/configuracao_media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+configuracao/label_media"
+        android:layout_alignBottom="@+id/configuracao_label_media"
         android:layout_alignParentRight="true"
-        android:layout_alignLeft="@+configuracao/miniatura"
+        android:layout_alignLeft="@+id/configuracao_miniatura"
         android:ems="10"
         android:visibility="gone"
         />
 
 
     <Button
-        android:id="@+configuracao/btn"
+        android:id="@+id/configuracao_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
