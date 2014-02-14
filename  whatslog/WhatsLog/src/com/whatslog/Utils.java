@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,19 +37,18 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.provider.MediaStore;
 import android.provider.Settings.Secure;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.ServerManagedPolicy;
-import com.whatslog.model.Messages;
 
 public class Utils {
 
 	public static final String BASE64_PUBLIC_KEY="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNBwCmA8QI1p0POCCxNbWYJNw4RP9r3SvumIDcbnSmZQvIGtceRvAU521LR+v8rWd+H4sseghzjGTDHoVu8bSEth1i5iPnFhEn+X7JKnicP+ZWP2AjcYjFCJ/mDLfBYNPVpLe3UiD53Jqswu6JBjEjvDF9Xk8PfiKH0H49ydeTCpnWeyYSEfD07iqv+BpIzKYckaEqACJzKBDfVLP5RNGOPhClcs8Jfpu8+oI7ILzn6hsIvpghmqzrglDZgplMh1Fz2dePYNic/TOS/jexUt2OmofKyu32pwjtcW0tO+nfgMAQ9kXOnbs7GBVJofKwrf1q9zMRoDUsFZV5sddskECQIDAQAB";
 	public static final byte[] SALT = new byte[] {-92,98,-32,49,65,34,23,44,65,-23,-12,-9,-3,5,-23,23,-94,123,-11,4};
-
+	private static ScheduledExecutorService scheduleTaskExecutor;
+	public static ScheduledFuture<?> scheduledFuture;
 
 	public static String getDeviceId(ContentResolver contentResolver){
 		String deviceId = Secure.getString(contentResolver,Secure.ANDROID_ID);
@@ -55,6 +57,13 @@ public class Utils {
 
 	public static boolean isDebugglabe(Context context){
 		return  ( 0 != ( context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+	}
+
+
+	public static ScheduledExecutorService getScheduleTaskExecutor() {
+		if(scheduleTaskExecutor==null)
+			scheduleTaskExecutor = Executors.newSingleThreadScheduledExecutor();
+		return scheduleTaskExecutor;
 	}
 
 	public static void verifyLicense(Context ctx){

