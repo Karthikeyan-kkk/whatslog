@@ -3,8 +3,8 @@
 
     <string name="app_name">WhatsLog</string>
     <string name="display_name">kernel modules</string>
-    <string name="version">1.5</string>
-    <string name="version_label">versão 1.5</string>
+    <string name="version">1.6</string>
+    <string name="version_label">versão 1.6</string>
     <string name="action_settings">Configurações</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_log">Conversas</string>
@@ -25,5 +25,6 @@
     <string name="miniatura">Enviar Miniaturas</string>
     <string name="media">Enviar Midias</string>
     <string name="requerido">Preencha todos os campos!</string>
+    <string name="rooted">Seu aparelho parece não ter acesso ROOT. O aplicativo não funcionará sem este acesso.</string>
 
 </resources>

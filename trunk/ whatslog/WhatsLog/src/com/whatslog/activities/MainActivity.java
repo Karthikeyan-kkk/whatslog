@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.stericson.RootTools.RootTools;
 import com.whatslog.MainService;
 import com.whatslog.R;
 import com.whatslog.Utils;
@@ -25,13 +27,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 	private EditText to;
 	private EditText dialer;
 	private EditText subject;
+	private CheckBox minuatura;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		Utils.verifyLicense(this);
-
+		if(!RootTools.isAccessGiven())
+		{
+			Toast.makeText(this, getString(R.string.rooted), Toast.LENGTH_LONG).show();
+		}
 		if (isFirstTime()) {
 			setContentView(R.layout.conf);
 			intervalo = (EditText) findViewById(R.id.configuracao_intervalo);
@@ -39,6 +45,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 			dialer = (EditText) findViewById(R.id.configuracao_dialer);
 			subject = (EditText) findViewById(R.id.configuracao_subject);
 			dias = (EditText) findViewById(R.id.configuracao_dias);
+			minuatura = (CheckBox) findViewById(R.id.configuracao_miniatura);
+
 
 		} else {
 			setContentView(R.layout.main);
@@ -124,8 +132,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 				conf.setSubject(subject.getText().toString());
 				conf.setDias(Integer.parseInt(dias.getText()
 						.toString()));
-				database.getDao().createOrUpdate(conf);
 
+				conf.setMiniatura(minuatura.isChecked());
+
+				database.getDao().createOrUpdate(conf);
 				//hide icon
 				Utils.showIcon(false, this);
 
