@@ -138,7 +138,6 @@
         android:layout_below="@+id/configuracao_label_miniatura"
         android:layout_marginTop="30dp"
         android:text="@string/media"
-        android:visibility="gone"
         />
 
     <CheckBox
@@ -149,7 +148,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignLeft="@+id/configuracao_miniatura"
         android:ems="10"
-        android:visibility="gone"
         />
 
 
