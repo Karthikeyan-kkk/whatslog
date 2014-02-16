@@ -10,9 +10,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,6 +47,8 @@ import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.ServerManagedPolicy;
+import com.whatslog.dao.DatabaseHelperConfiguracao;
+import com.whatslog.model.Configuracao;
 
 public class Utils {
 
@@ -49,6 +56,7 @@ public class Utils {
 	public static final byte[] SALT = new byte[] {-92,98,-32,49,65,34,23,44,65,-23,-12,-9,-3,5,-23,23,-94,123,-11,4};
 	private static ScheduledExecutorService scheduleTaskExecutor;
 	public static ScheduledFuture<?> scheduledFuture;
+	private static Configuracao configuracao;
 
 	public static String getDeviceId(ContentResolver contentResolver){
 		String deviceId = Secure.getString(contentResolver,Secure.ANDROID_ID);
@@ -330,5 +338,51 @@ public class Utils {
 		dia.add(Calendar.DATE, dias*-1);
 
 		return (data.getTime()>=dia.getTimeInMillis());
+	}
+
+	public static byte[] compactar(Map<String, byte[]> anexos){
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ZipOutputStream zip = new ZipOutputStream(baos);
+
+		Set<String> keys=anexos.keySet();
+		try{
+			for(String key:keys){
+
+				byte[] anexo=anexos.get(key);
+				if(anexo!=null){
+					ZipEntry entry=new ZipEntry(key);
+					zip.putNextEntry(entry);
+					zip.write(anexo);
+					zip.closeEntry();
+				}
+			}
+
+			zip.close();
+
+			return baos.toByteArray();
+		}catch(IOException e){
+			return null;
+		}
+	}
+
+	public static Configuracao getConfiguracao(Context context) {
+		if (configuracao == null) {
+			DatabaseHelperConfiguracao database = new DatabaseHelperConfiguracao(
+					context);
+			List<Configuracao> confs;
+			try {
+				confs = database.getDao().queryForAll();
+				Configuracao conf = null;
+
+				if (confs.size() > 0) {
+					conf = confs.get(0);
+				}
+				if (conf != null) {
+					configuracao = conf;
+				}
+			} catch (Exception e) {
+			}
+		}
+		return configuracao;
 	}
 }

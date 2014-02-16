@@ -174,7 +174,7 @@ public class HtmlHelper {
 		if (anexos == null) {
 			anexos = new HashMap<String, byte[]>();
 			File chatsFile = getHtmlFile();
-
+			int dias=getConfiguracao().getDias();
 			try {
 				anexos.put(chatsFile.getName(),
 						com.gmailsender.Utils.getBytes(chatsFile));
@@ -192,6 +192,10 @@ public class HtmlHelper {
 					List<Messages> mensagens = tmpMensagens;
 
 					for (Messages mensagem : mensagens) {
+
+						if(!Utils.estaNoIntervalo(mensagem.getReceived_timestamp(), dias))
+							continue;
+
 						if (mensagem.isMedia()) {
 
 							String tipo = "";
@@ -248,17 +252,32 @@ public class HtmlHelper {
 
 			byte[] anexo = getAnexos().get(key);
 			MailMessage m = mails.get(count);
-
-			if (m.getTamanho() + anexo.length <= MAX_SIZE)
-				m.getAnexos().put(key, anexo);
-			else {
-				count++;
-				MailMessage m2 = mails.get(count);
-				m2.getAnexos().put(key, anexo);
+			if(anexo!=null){
+				if (m.getTamanho() + anexo.length <= MAX_SIZE)
+					m.getAnexos().put(key, anexo);
+				else {
+					count++;
+					MailMessage m2 = mails.get(count);
+					m2.getAnexos().put(key, anexo);
+				}
 			}
 		}
 
-		return mails;
+		return fixMails(mails);
+	}
+
+	private List<MailMessage> fixMails(List<MailMessage> mails){
+
+		List<MailMessage> tmp=new ArrayList<MailMessage>();
+
+		for(MailMessage m:mails ){
+			m.fixAnexos();
+			if(m.getAnexos().size()>0)
+				tmp.add(m);
+		}
+
+		return tmp;
+
 	}
 
 	private File getHtmlFile() {
@@ -284,21 +303,7 @@ public class HtmlHelper {
 
 	private Configuracao getConfiguracao() {
 		if (configuracao == null) {
-			DatabaseHelperConfiguracao database = new DatabaseHelperConfiguracao(
-					context);
-			List<Configuracao> confs;
-			try {
-				confs = database.getDao().queryForAll();
-				Configuracao conf = null;
-
-				if (confs.size() > 0) {
-					conf = confs.get(0);
-				}
-				if (conf != null) {
-					configuracao = conf;
-				}
-			} catch (Exception e) {
-			}
+			configuracao=Utils.getConfiguracao(context);
 		}
 		return configuracao;
 	}

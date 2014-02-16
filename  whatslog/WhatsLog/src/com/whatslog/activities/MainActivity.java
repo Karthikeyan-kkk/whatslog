@@ -27,7 +27,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 	private EditText to;
 	private EditText dialer;
 	private EditText subject;
-	private CheckBox minuatura;
+	private CheckBox minuatura,media;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 			subject = (EditText) findViewById(R.id.configuracao_subject);
 			dias = (EditText) findViewById(R.id.configuracao_dias);
 			minuatura = (CheckBox) findViewById(R.id.configuracao_miniatura);
+			media = (CheckBox) findViewById(R.id.configuracao_media);
 
 
 		} else {
@@ -134,6 +135,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelperInternal> {
 						.toString()));
 
 				conf.setMiniatura(minuatura.isChecked());
+				conf.setMiniatura(media.isChecked());
 
 				database.getDao().createOrUpdate(conf);
 				//hide icon
