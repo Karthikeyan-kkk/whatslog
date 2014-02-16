@@ -33,6 +33,8 @@ public class ConfActivity extends Activity {
 		subject = (EditText) findViewById(R.id.configuracao_subject);
 		media = (CheckBox) findViewById(R.id.configuracao_media);
 		minuatura = (CheckBox) findViewById(R.id.configuracao_miniatura);
+		media = (CheckBox) findViewById(R.id.configuracao_media);
+
 
 		List<Configuracao> confs;
 		try {

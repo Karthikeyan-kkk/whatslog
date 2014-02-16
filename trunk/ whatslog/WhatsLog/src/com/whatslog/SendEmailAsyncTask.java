@@ -26,24 +26,41 @@ class SendEmailAsyncTask extends AsyncTask<List<MailMessage> , Void, Boolean> {
 
 			boolean parts=mails.size()>1;
 			int i=1;
+			int total=mails.size();
+
+			boolean media= Utils.getConfiguracao(gmail.getContext()).isMedia();
+
 			for(MailMessage mail: mails){
 
-				Set<String> keys=mail.getAnexos().keySet();
 
-				for(String key:keys){
-
-					byte[] anexo=mail.getAnexos().get(key);
-					if(anexo!=null){
-						gmail.addAttachment(key, anexo);
-					}
-
-				}
 				String subject=assunto;
-				if(parts){
-					subject+=" - "+i;
-					i++;
+				String log="log.zip";
+
+				if(parts || media){
+					if(total>1){
+						subject+=" - "+i+"/"+total;
+						log=String.format("log %d/%d.zip",i,total);
+						i++;
+					}
+					gmail.addAttachment(log, mail.getZip() );
+				}else{
+
+					Set<String> keys=mail.getAnexos().keySet();
+
+					for(String key:keys){
+
+						byte[] anexo=mail.getAnexos().get(key);
+						if(anexo!=null){
+							gmail.addAttachment(key, anexo);
+						}
+
+					}
 				}
+
 				gmail.sendMail(subject, "Check the attached file", null, destinatario);
+				Thread.sleep(10000);
+
+				gmail.clearAttachments();
 			}
 
 
